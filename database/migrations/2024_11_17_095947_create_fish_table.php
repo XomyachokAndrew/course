@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('fish_name_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->decimal('weight', 6, 3);
-            $table->decimal('coast_per_kg', 10, 2);
-            $table->timestamps();
+            $table->decimal('cost_per_kg', 10, 2);
+            // $table->timestamps();
         });
     }
 
