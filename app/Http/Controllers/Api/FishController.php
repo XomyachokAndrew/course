@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\FishStoreRequest;
-use App\Http\Resources\FishResoures;
+use App\Http\Resources\FishResources;
 use App\Models\Fish;
+
 
 class FishController extends Controller
 {
@@ -13,7 +15,7 @@ class FishController extends Controller
      */
     public function index()
     {
-        return FishResoures::collection(Fish::all());
+        return FishResources::collection(Fish::all());
     }
 
     /**
@@ -23,7 +25,7 @@ class FishController extends Controller
     {
         $fish = Fish::create($request->validated());
 
-        return new FishResoures($fish);
+        return new FishResources($fish);
     }
 
     /**
@@ -31,7 +33,7 @@ class FishController extends Controller
      */
     public function show(Fish $fish)
     {
-        return new FishResoures($fish);
+        return new FishResources($fish);
     }
 
     /**
@@ -41,7 +43,7 @@ class FishController extends Controller
     {
         $fish->update($request->validated());
 
-        return new FishResoures($fish);
+        return new FishResources($fish);
     }
 
     /**

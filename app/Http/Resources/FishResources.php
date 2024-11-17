@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResoures extends JsonResource
+class FishResources extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,9 +16,10 @@ class UserResoures extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'place' => $this->place,
-            'number' => $this->number,
+            'user' => new UserResources($this->user),
+            'fish_name' => new FishNameResources($this->fishName),
+            'weight' => $this->weight,
+            'cost_per_kg' => $this->cost_per_kg,
         ];
     }
 }
