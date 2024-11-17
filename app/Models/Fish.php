@@ -24,6 +24,11 @@ class Fish extends Model
         return $this->belongsTo(FishName::class, 'fish_name_id');
     }
 
+    public function photos() 
+    {
+        return $this->hasMany(Photo::class, 'fish_id');
+    }
+
     public function user() 
     {
         return $this->belongsTo(User::class, 'user_id');
