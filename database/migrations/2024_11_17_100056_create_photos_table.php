@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('photos', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('number', 11)->unique();
-            $table->string('password');
-            $table->string('place');
-            $table->rememberToken();
-            $table->timestamps();
+            $table->foreignId('fish_id')->constrained();
+            $table->binary('photo');
         });
     }
 
@@ -27,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('photos');
     }
 };
