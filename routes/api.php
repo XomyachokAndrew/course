@@ -26,14 +26,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('login', [LoginController::class, 'store']);
+Route::post('logout', [LoginController::class, 'destroy']);
+
 Route::apiResources([
     'requests' => RequestController::class,
     'orders' => OrderController::class,
     'photos' => PhotoController::class,
     'fish_names' => FishNameController::class,
-    'login' => LoginController::class,
     'register' => RegisterController::class,
-    'tokens' => PersonalAccessTokenController::class,
+    // 'tokens' => PersonalAccessTokenController::class,
     'fishes' => FishController::class,
     'requests/{id}' => RequestController::class,
     'photos/{id}' => PhotoController::class,
