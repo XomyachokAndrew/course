@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResources;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller
 {
@@ -20,20 +17,15 @@ class LoginController extends Controller
         $credentials = $request->only('number', 'password');
         \Log::info('Данные найден: ', $credentials);
 
-
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = Str::random(60);
-
-            // Сохранение токена в кэше с привязкой к пользователю
-            Cache::put('token_' . $token, $user->id, 60 * 60); // Токен действителен 1 час
-
-            return response()->json([
-                'token' => $token,
-                'user' => new UserResources($user),
-            ], 200);
+        if (!$token = JWTAuth::attempt($request->only('email', 'password'))) {
+            return response()->json(['error' => 'invalid_credentials'], 401);
         }
 
-        return response()->json(['message' => 'Неверные учетные данные.'], 401);
+        return response()->json(compact('token'));
+    }
+
+    public function destroy() {
+        JWTAuth::invalidate(JWTAuth::getToken());
+        return response()->json(['message' => 'User logged out successfully']);
     }
 }
