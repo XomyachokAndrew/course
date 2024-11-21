@@ -8,6 +8,9 @@ use App\Http\Resources\UserResources;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+
 
 class RegisterController extends Controller
 {
@@ -30,8 +33,7 @@ class RegisterController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        if($request['password'] != $request['password_confirmation'])
-        {
+        if ($request['password'] != $request['password_confirmation']) {
             return response()->json($validator->errors(), 422);
         }
 
@@ -41,9 +43,15 @@ class RegisterController extends Controller
             'number' => $request->number,
             'password' => Hash::make($request->password),
         ]);
+        // Генерация токена
+        $token = Str::random(60); // Генерация случайного токена
 
-        // Возврат ответа с данными пользователя
+        // Сохранение токена в кэше с привязкой к пользователю
+        Cache::put('token_' . $token, $user->id, 60 * 60); // Токен действителен 1 час
+
+        // Возврат ответа с данными пользователя и токеном
         return response()->json([
+            'token' => $token,
             'user' => new UserResources($user),
             'message' => 'Пользователь успешно зарегистрирован.',
         ], 201);
