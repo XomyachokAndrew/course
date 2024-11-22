@@ -19,6 +19,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
     protected $fillable = [
+        'role_id',
         'name',
         'place',
         'number',
@@ -32,9 +33,15 @@ class User extends Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims()
     {
-        return [];
+        return [
+            'role' => $this->role()->name, // Добавьте роль пользователя в токен
+        ];
     }
 
+    public function role()
+    {
+        return $this->hasMany(Role::class, 'role_id');
+    }
     public $timestamps = false;
 
     // /**
