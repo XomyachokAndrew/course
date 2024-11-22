@@ -3,11 +3,12 @@
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PhotoController;
 use App\Http\Controllers\Api\RequestController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
-use App\Http\Controllers\Api\Auth\PersonalAccessTokenController;
+// use App\Http\Controllers\Api\Auth\PersonalAccessTokenController;
 use App\Http\Controllers\Api\FishController;
 use App\Http\Controllers\Api\FishNameController;
 
@@ -27,7 +28,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('login', [LoginController::class, 'store']);
-Route::post('logout', [LoginController::class, 'destroy']);
+Route::middleware('auth:api')->group(function () {
+    Route::post('logout', [LoginController::class, 'destroy']);
+    // Другие защищенные маршруты
+});
+
+Route::middleware(['auth:api', 'role:admin'])->group(function () {
+    Route::get('/user', [UserController::class, 'destroy']);
+});
 
 Route::apiResources([
     'requests' => RequestController::class,
