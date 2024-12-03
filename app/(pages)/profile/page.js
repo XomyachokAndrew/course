@@ -34,7 +34,7 @@ const Profile = () => {
         };
 
         fetchFishes();
-    }, []);
+    }, [user]); // Добавлен user в зависимости
 
     if (loading) {
         return <div>Loading...</div>;
@@ -49,8 +49,8 @@ const Profile = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 mt-16"> {/* Добавлен отступ сверху */}
+            <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-16">
                 <h1 className="text-3xl font-bold mb-4">Профиль</h1>
                 <h2 className="text-2xl font-semibold mb-2">Информация о вас:</h2>
                 <p className="mb-2"><strong>Имя:</strong> {user.name}</p>
@@ -60,7 +60,7 @@ const Profile = () => {
                     <button className="mr-2 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200">
                         Добавить запрос
                     </button>
-                    <button 
+                    <button
                         className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
                         onClick={handleAddFish} // Добавлен обработчик события
                     >
