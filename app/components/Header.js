@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 import Link from 'next/link';
@@ -13,28 +13,22 @@ const Header = () => {
     };
 
     return (
-        <header className="bg-[#0066FF] text-white py-6"> {/* Увеличен отступ по вертикали */}
-            <div className="container mx-auto flex justify-between items-center px-6"> {/* Увеличен отступ по горизонтали */}
-                <h1 className="text-3xl font-bold"> {/* Увеличен размер шрифта заголовка */}
+        <header className="bg-[#0066FF] text-white py-6 fixed top-0 left-0 w-full z-50"> {/* Добавлено фиксированное позиционирование */}
+            <div className="container mx-auto flex justify-between items-center px-6">
+                <h1 className="text-3xl font-bold">
                     <Link href="/" className="hover:text-[#FFA100] transition duration-200">
                         Рыбный Мост
                     </Link>
                 </h1>
                 <nav>
-                    <ul className="flex space-x-6"> {/* Увеличено расстояние между элементами списка */}
-
+                    <ul className="flex space-x-6">
                         {user ? (
                             <>
-                                {isAdmin() ?
-                                    (
-                                        <li>
-                                            <Link href='/admin'>Админ</Link>
-                                        </li>
-                                    ) : (
-                                        <>
-                                        </>
-                                    )
-                                }
+                                {isAdmin() ? (
+                                    <li>
+                                        <Link href='/admin'>Админ</Link>
+                                    </li>
+                                ) : null}
                                 <li>
                                     <Link className="hover:text-[#FFA100] transition duration-200" href="/profile">
                                         Профиль
@@ -61,8 +55,8 @@ const Header = () => {
                             </>
                         )}
                         <li>
-                            <Link href="/orders" className='hover:text-[#FFA100] transition duration-200'>
-                                Заказы
+                            <Link href="/catalog" className='hover:text-[#FFA100] transition duration-200'>
+                                Рыба/Спрос
                             </Link>
                         </li>
                     </ul>
