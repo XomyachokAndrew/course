@@ -1,6 +1,7 @@
 import Slider from 'react-slick'; // Импортируем Slider
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import Link from 'next/link';
 
 const FishCard = ({ fish }) => {
     const settings = {
@@ -13,7 +14,7 @@ const FishCard = ({ fish }) => {
     };
 
     return (
-        <div key={fish.id} className="border rounded-lg p-4 shadow-md">
+        <div key={fish.id} className="border rounded-lg p-4 shadow-md transition-transform transform hover:scale-105 ">
             {fish.photos.length > 0 ? (
                 fish.photos.length > 1 ? ( // Проверяем, больше ли одного фото
                     <Slider {...settings}>
@@ -43,6 +44,9 @@ const FishCard = ({ fish }) => {
             <p><strong>Вес:</strong> {fish.weight} кг</p>
             <p><strong>Стоимость за кг:</strong> {fish.cost_per_kg} ₽</p>
             <p><strong>Дата:</strong> {fish.date}</p>
+            <Link href={`/fish/${fish.id}`} className="mt-4 inline-block bg-blue-500 text-white py-2 px-4 rounded">
+                Подробнее
+            </Link>
         </div>
     );
 };

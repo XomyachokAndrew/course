@@ -17,7 +17,7 @@ export const getFishNames = async () => {
     }
 };
 
-export const getFish = async () => {
+export const getFishes = async () => {
     try {
         const response = await axios.get('/fishes');
         const options = response.data.data;
@@ -26,6 +26,17 @@ export const getFish = async () => {
         console.error('qwe', error);
     }
 };
+
+export const getFish = async (id) => {
+    try {
+        const response = await axios.get(`/fishes/${id}`);
+        const options = response.data.data;
+        return options;
+    } catch (error) {
+        console.error('qwe', error);
+    }
+};
+
 
 export const getFishUser = async (id) => {
     try {
