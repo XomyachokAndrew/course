@@ -1,14 +1,20 @@
 'use client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const Login = () => {
-    const { login } = useAuth();
+    const { login,user } = useAuth();
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
+
+    useEffect(() => {
+        if (user) {
+            router.push('/profile');
+        }
+    });
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -23,7 +29,7 @@ const Login = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-md w-96">
+            <div className="bg-[#F8F9FA] p-8 rounded-lg shadow-md w-96">
                 <h1 className="text-2xl font-bold mb-6 text-center text-[#0013FF]">Вход</h1>
                 <form onSubmit={handleLogin}>
                     <div className="mb-4">

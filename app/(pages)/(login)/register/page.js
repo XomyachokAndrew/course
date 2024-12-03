@@ -1,17 +1,23 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const Register = () => {
-    const { login, register } = useAuth();
+    const { user, login, register } = useAuth();
     const [phone, setPhone] = useState('');
     const [name, setName] = useState('');
     const [place, setPlace] = useState('');
     const [password_confirmation, setConfirmPassword] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
+
+    useEffect(() => {
+        if (user) {
+            router.push('/profile');
+        }
+    });
 
     const handleRegister = async (e) => {
         e.preventDefault();
