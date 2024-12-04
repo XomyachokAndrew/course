@@ -58,20 +58,44 @@ const Profile = () => {
         return <div>Please log in to view your profile.</div>;
     }
 
+
+
+    return (
+        <div className="flex items-center justify-center min-h-screen mt-16"> {/* Добавлен отступ сверху */}
+
+            <ProfileInfo user={user} router={router} />
+
+            <RequestSection requests={requests} />
+
+            <FishSection fishes={fishes} />
+
+        </div>
+    );
+};
+
+const ProfileInfo = ({ user, router }) => {
+
     const handleAddFish = () => {
         router.push('/fish/add/'); // Перенаправление на страницу добавления рыбы
     };
 
+    const handleAddRequest = () => {
+        router.push('/request/add/'); // Перенаправление на страницу добавления рыбы
+    };
+
     return (
-        <div className="flex items-center justify-center min-h-screen  mt-16"> {/* Добавлен отступ сверху */}
-            <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-16">
+        <div className='absolute left-0 top-0'>
+            <div className=" max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md ml-16 mt-28 flex-grow">
                 <h1 className="text-3xl font-bold mb-4">Профиль</h1>
                 <h2 className="text-2xl font-semibold mb-2">Информация о вас:</h2>
                 <p className="mb-2"><strong>Имя:</strong> {user.name}</p>
                 <p className="mb-4"><strong>Телефон:</strong> {user.phone}</p>
 
                 <div className="mb-4">
-                    <button className="mr-2 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200">
+                    <button
+                        className="mr-2 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200"
+                        onClick={handleAddRequest}
+                    >
                         Добавить запрос
                     </button>
                     <button
@@ -81,25 +105,40 @@ const Profile = () => {
                         Добавить рыбу
                     </button>
                 </div>
+            </div>
+        </div>
 
-                <div className="mt-6">
-                    <h1 className="text-2xl font-semibold mb-2">Мои заказы</h1>
-                    <div className="border rounded-lg p-4">
-                        {
-                            requests.length > 0 ? (
-                                requests.map((request) => (
-                                    <RequestCard key={request.id} request={request} />
-                                ))
-                            ) : (
-                                <p className="text-gray-500">Здесь будут ваши заказы.</p>
-                            )
-                        }
-                    </div>
+    );
+};
+
+const RequestSection = ({ requests }) => {
+    return (
+        <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-4 h-96">
+            <div className="mt-6">
+                <h1 className="text-2xl font-semibold mb-2">Мои заказы</h1>
+                <div className="border rounded-lg p-4 h-full flex flex-col justify-between">
+                    {
+                        requests.length > 0 ? (
+                            requests.map((request) => (
+                                <RequestCard key={request.id} request={request} />
+                            ))
+                        ) : (
+                            <p className="text-gray-500">Здесь будут ваши заказы.</p>
+                        )
+                    }
                 </div>
+            </div>
+        </div>
+    );
+};
 
-                <div className="mt-6">
-                    <h1 className="text-2xl font-semibold mb-2">Мои рыбы</h1>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+const FishSection = ({ fishes }) => {
+    return (
+        <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-4 h-96">
+            <div className="mt-6">
+                <h1 className="text-2xl font-semibold mb-2">Мои рыбы</h1>
+                <div className="border rounded-lg p-4 h-full flex flex-col justify-between">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 h-full">
                         {fishes.length > 0 ? (
                             fishes.map((fish) => (
                                 <FishCard key={fish.id} fish={fish} />
@@ -110,7 +149,6 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
-            {/* Здесь можно добавить форму для редактирования профиля */}
         </div>
     );
 };
