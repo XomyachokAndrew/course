@@ -49,7 +49,7 @@ const Profile = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100 mt-16"> {/* Добавлен отступ сверху */}
+        <div className="flex items-center justify-center min-h-screen  mt-16"> {/* Добавлен отступ сверху */}
             <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-16">
                 <h1 className="text-3xl font-bold mb-4">Профиль</h1>
                 <h2 className="text-2xl font-semibold mb-2">Информация о вас:</h2>

@@ -1,8 +1,12 @@
+'use client'
+
 import Link from 'next/link';
+import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
+  const { user } = useAuth();
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <header className="text-center mb-10">
         <h1 className="text-4xl font-bold text-blue-600">Рыбный Мост</h1>
         <p className="mt-4 text-lg text-gray-700">
@@ -24,9 +28,21 @@ export default function Home() {
 
         <section className="mb-10 text-center">
           <h2 className="text-2xl font-semibold mb-4">Готовы сделать заказ или продать рыбу?</h2>
-          <Link href="/orders" className="inline-block px-6 py-3 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition duration-200">
+          <Link href="/catalog" className="inline-block px-6 py-3 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition duration-200">
             К заказам
           </Link>
+          {
+            user ? (
+              <Link href="/fish/add" className="inline-block px-6 py-3 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition duration-200 ml-4">
+                Добавить рыбу
+              </Link>
+            ) : (
+              <Link href="/login" className="inline-block px-6 py-3 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition duration-200 ml-4">
+                Добавить рыбу
+              </Link>
+            )
+          }
+
         </section>
       </main>
 
