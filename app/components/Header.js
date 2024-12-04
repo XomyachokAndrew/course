@@ -26,7 +26,7 @@ const Header = () => {
                             <>
                                 {isAdmin() ? (
                                     <li>
-                                        <Link href='/admin'>Админ</Link>
+                                        <Link className="hover:text-[#FFA100] transition duration-200" href='/admin'>Админ</Link>
                                     </li>
                                 ) : null}
                                 <li>
@@ -35,7 +35,7 @@ const Header = () => {
                                     </Link>
                                 </li>
                                 <li>
-                                    <button onClick={handleLogout} className="text-red-500 hover:text-[#FFA100] transition duration-200">
+                                    <button onClick={handleLogout} className="hover:text-[#FFA100] transition duration-200">
                                         Выйти
                                     </button>
                                 </li>

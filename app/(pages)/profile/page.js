@@ -85,7 +85,7 @@ const ProfileInfo = ({ user, router }) => {
 
     return (
         <div className='absolute left-0 top-0'>
-            <div className=" max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md ml-16 mt-28 flex-grow">
+            <div className=" max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md ml-16 mt-24">
                 <h1 className="text-3xl font-bold mb-4">Профиль</h1>
                 <h2 className="text-2xl font-semibold mb-2">Информация о вас:</h2>
                 <p className="mb-2"><strong>Имя:</strong> {user.name}</p>
@@ -113,19 +113,21 @@ const ProfileInfo = ({ user, router }) => {
 
 const RequestSection = ({ requests }) => {
     return (
-        <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-4 h-96">
-            <div className="mt-6">
-                <h1 className="text-2xl font-semibold mb-2">Мои заказы</h1>
-                <div className="border rounded-lg p-4 h-full flex flex-col justify-between">
-                    {
-                        requests.length > 0 ? (
-                            requests.map((request) => (
-                                <RequestCard key={request.id} request={request} />
-                            ))
-                        ) : (
-                            <p className="text-gray-500">Здесь будут ваши заказы.</p>
-                        )
-                    }
+        <div className='max-w-2xl mx-auto mt-12 h-96'>
+            <div className="p-6 bg-white rounded-lg shadow-md ">
+                <div>
+                    <h1 className="text-2xl font-semibold mb-2">Мои заказы</h1>
+                    <div className="border rounded-lg p-4 h-full flex flex-col justify-between">
+                        {
+                            requests.length > 0 ? (
+                                requests.slice().reverse().map((request) => ( // Сортировка в обратном порядке
+                                    <RequestCard key={request.id} request={request} />
+                                ))
+                            ) : (
+                                <p className="text-gray-500">Здесь будут ваши заказы.</p>
+                            )
+                        }
+                    </div>
                 </div>
             </div>
         </div>
@@ -134,18 +136,20 @@ const RequestSection = ({ requests }) => {
 
 const FishSection = ({ fishes }) => {
     return (
-        <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-4 h-96">
-            <div className="mt-6">
-                <h1 className="text-2xl font-semibold mb-2">Мои рыбы</h1>
-                <div className="border rounded-lg p-4 h-full flex flex-col justify-between">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 h-full">
-                        {fishes.length > 0 ? (
-                            fishes.map((fish) => (
-                                <FishCard key={fish.id} fish={fish} />
-                            ))
-                        ) : (
-                            <p className="text-gray-500">У вас нет рыб.</p>
-                        )}
+        <div className='max-w-2xl mx-auto h-96 mt-12'>
+            <div className="p-6 bg-white rounded-lg shadow-md">
+                <div className="mt-6">
+                    <h1 className="text-2xl font-semibold mb-2">Мои рыбы</h1>
+                    <div className="border rounded-lg p-4 h-full flex flex-col justify-between">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 h-full">
+                            {fishes.length > 0 ? (
+                                fishes.slice().reverse().map((fish) => ( // Сортировка в обратном порядке
+                                    <FishCard key={fish.id} fish={fish} />
+                                ))
+                            ) : (
+                                <p className="text-gray-500">У вас нет рыб.</p>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
