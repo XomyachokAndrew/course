@@ -3,13 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/app/context/AuthContext'; // Путь к вашему AuthProvider
 import { useRouter } from 'next/navigation';
-import { getFishUser } from '@/app/api/handlers';
+import { getFishUser, getRequestUser } from '@/app/api/handlers';
 import FishCard from '@/app/components/FishCard';
+import RequestCard from '@/app/components/RequestCard';
 
 const Profile = () => {
     const { token, user, logout } = useAuth();
     const [loading, setLoading] = useState(true);
     const [fishes, setFishes] = useState([]);
+    const [requests, setRequests] = useState([]);
     const [error, setError] = useState(null);
     const router = useRouter();
 
@@ -33,7 +35,19 @@ const Profile = () => {
             }
         };
 
+        const fetchRequests = async () => {
+            if (user) {
+                try {
+                    const response = await getRequestUser(user.id);
+                    setRequests(response);
+                } catch (error) {
+                    setError('Ошибка при загрузке названий рыб');
+                }
+            }
+        };
+
         fetchFishes();
+        fetchRequests();
     }, [user]); // Добавлен user в зависимости
 
     if (loading) {
@@ -71,8 +85,15 @@ const Profile = () => {
                 <div className="mt-6">
                     <h1 className="text-2xl font-semibold mb-2">Мои заказы</h1>
                     <div className="border rounded-lg p-4">
-                        {/* Здесь заказы будут */}
-                        <p className="text-gray-500">Здесь будут ваши заказы.</p>
+                        {
+                            requests.length > 0 ? (
+                                requests.map((request) => (
+                                    <RequestCard key={request.id} request={request} />
+                                ))
+                            ) : (
+                                <p className="text-gray-500">Здесь будут ваши заказы.</p>
+                            )
+                        }
                     </div>
                 </div>
 

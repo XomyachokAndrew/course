@@ -47,6 +47,16 @@ export const getFishUser = async (id) => {
         console.error('qwe', error);
     }
 };
+
+export const getRequestUser = async (id) => {
+    try {
+        const response = await axios.get(`/user/requests/${id}`);
+        const options = response.data.data;
+        return options;
+    } catch (error) {
+        console.error('qwe', error);
+    }
+};
 //#endregion
 
 //#region POST
