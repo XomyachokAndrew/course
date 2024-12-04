@@ -14,7 +14,7 @@ const Catalog = () => {
         }
 
         fetchFishes();
-    });
+    }, []);
 
     return (
         <div>

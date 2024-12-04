@@ -48,38 +48,40 @@ const AddFish = () => {
     };
 
     return (
-        <div className="bg-white p-8 rounded-lg shadow-md w-96">
-            <h1 className="text-3xl font-bold mb-4">Добавить Запрос на рыбу</h1>
-            {error && <p className="text-red-500 mb-4">{error}</p>}
-            {success && <p className="text-green-500 mb-4">{success}</p>}
-            <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                    <label className="block text-gray-700 mb-2">Название:</label>
-                    <input
-                        type="text"
-                        name='title'
-                        value={request.title}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full border border-gray-300 p-2 rounded"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700 mb-2">Описание:</label>
-                    <textarea
-                        name='description'
-                        value={request.description}
-                        onChange={handleInputChange}
-                        className="w-full border border-gray-300 p-2 rounded"
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
-                >
-                    Добавить
-                </button>
-            </form>
+        <div className="flex items-center justify-center min-h-screen  mt-16"> {/* Добавлен отступ сверху */}
+            <div className="bg-white p-8 rounded-lg shadow-md w-96">
+                <h1 className="text-3xl font-bold mb-4">Добавить Запрос на рыбу</h1>
+                {error && <p className="text-red-500 mb-4">{error}</p>}
+                {success && <p className="text-green-500 mb-4">{success}</p>}
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 mb-2">Название:</label>
+                        <input
+                            type="text"
+                            name='title'
+                            value={request.title}
+                            onChange={handleInputChange}
+                            required
+                            className="w-full border border-gray-300 p-2 rounded"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 mb-2">Описание:</label>
+                        <textarea
+                            name='description'
+                            value={request.description}
+                            onChange={handleInputChange}
+                            className="w-full border border-gray-300 p-2 rounded"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
+                    >
+                        Добавить
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

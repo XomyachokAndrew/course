@@ -91,4 +91,23 @@ export const postFishWithPhotos = async (fishData, images) => {
         throw error; // Пробрасываем ошибку для дальнейшей обработки
     }
 }
+
+export const postRequest = async (request) => {
+    try {
+        const csrfToken = await csrf_token();
+        const token = localStorage.getItem('token');
+        const response = await axios.post('/requests', request, {
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+        });
+
+        return response.data; // Возвращаем данные о созданной рыбе и загруженных фотографиях
+    } catch (error) {
+        console.error('Ошибка при отправке данных:', error.response?.data || error.message);
+        throw error; // Пробрасываем ошибку для дальнейшей обработки
+    }
+}
 //#endregion
