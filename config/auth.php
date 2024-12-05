@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'jwt', // или 'passport', если вы используете Laravel Passport
+            'provider' => 'users',
+        ],
     ],
 
     /*
