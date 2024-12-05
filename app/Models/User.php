@@ -22,7 +22,7 @@ class User extends Authenticatable implements JWTSubject
         'role_id',
         'name',
         'place',
-        'number',
+        'phone',
         'password',
     ];
 
@@ -34,13 +34,13 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [
-            'role' => $this->role()->name, // Добавьте роль пользователя в токен
+            'role' => $this->role_id, // Добавьте роль пользователя в токен
         ];
     }
 
     public function role()
     {
-        return $this->hasMany(Role::class, 'role_id');
+        return $this->belongsTo(Role::class, 'role_id');
     }
     public $timestamps = false;
 
