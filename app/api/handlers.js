@@ -48,6 +48,16 @@ export const getFishUser = async (id) => {
     }
 };
 
+export const getRequest = async (id) => {
+    try {
+        const response = await axios.get(`/requests/${id}`);
+        const options = response.data.data;
+        return options;
+    } catch (error) {
+        console.error('qwe', error);
+    }
+};
+
 export const getRequestUser = async (id) => {
     try {
         const response = await axios.get(`/user/requests/${id}`);

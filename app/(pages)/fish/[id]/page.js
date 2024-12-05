@@ -32,7 +32,7 @@ const Fish = ({ params }) => {
     }, [user, router]); // Добавлен user и router в зависимости
 
     useEffect(() => {
-        const fetchFishes = async () => {
+        const fetchFish = async () => {
             if (user) {
                 try {
                     const id = (await params).id;
@@ -44,7 +44,7 @@ const Fish = ({ params }) => {
             }
         };
 
-        fetchFishes();
+        fetchFish();
     }, [user]); // Добавлен user в зависимости
 
     if (loading) {

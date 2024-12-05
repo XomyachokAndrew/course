@@ -11,6 +11,11 @@ const RequestCard = ({ request }) => {
                     </div>
                 </div>
             </div>
+            <div className="mt-4">
+                <Link href={`/request/${request.id}`} className="inline-block bg-blue-600 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-700 transition duration-200 text-center">
+                    Подробнее
+                </Link>
+            </div>
         </div>
     );
 };
