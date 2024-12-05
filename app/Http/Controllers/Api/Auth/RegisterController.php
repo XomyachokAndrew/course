@@ -22,7 +22,7 @@ class RegisterController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'place' => 'required|string|max:255',
-            'number' => 'required|string|max:11|unique:users', // Убедитесь, что это поле уникально
+            'phone' => 'required|string|max:11|unique:users', // Убедитесь, что это поле уникально
             'password' => 'required|string|min:8',
             'password_confirmation' => 'required|string|min:8',
 
@@ -33,9 +33,10 @@ class RegisterController extends Controller
         }
 
         $user = User::create([
+            'role_id' => 1,
             'name' => $request->name,
             'place' => $request->place,
-            'number' => $request->number,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
         ]);
      

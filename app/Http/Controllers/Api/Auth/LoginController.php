@@ -14,14 +14,15 @@ class LoginController extends Controller
      */
     public function store(Request $request)
     {
-        $credentials = $request->only('number', 'password');
+        $credentials = $request->only('phone', 'password');
         \Log::info('Данные найден: ', $credentials);
 
-        if (!$token = JWTAuth::attempt($request->only('email', 'password'))) {
+        if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'invalid_credentials'], 401);
         }
 
-        return response()->json(compact('token'));
+        $user = JWTAuth::user();
+        return response()->json(compact('token', 'user'));
     }
 
     public function destroy() {

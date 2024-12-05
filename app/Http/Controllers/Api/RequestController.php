@@ -30,7 +30,7 @@ class RequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
         return new RequestResources(Requests::findOrFail($id));
     }
@@ -38,7 +38,7 @@ class RequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $req, Requests $requests)
+    public function update(Requests $requests, Request $req)
     {
         $requests->update($req->validated());
 

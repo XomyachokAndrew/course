@@ -25,22 +25,28 @@ class PhotoController extends Controller
     {
         $request->validate([
             'fish_id' => 'required|integer',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('images', 'public');
+        $photos = [];
 
-            $photo = Photo::create([
-                'fish_id' => $request->fish_id,
-                'path' => $path,
-            ]);
-            $photo->save();
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('images', 'public');
 
-            return new PhotoResources($photo);
+                $photo = Photo::create([
+                    'fish_id' => $request->fish_id,
+                    'path' => $path,
+                ]);
+
+                $photos[] = new PhotoResources($photo);
+            }
+
+            return response()->json($photos, 201);
         }
 
-        return response()->json(['error' => 'Image not uploaded'], 400);
+        return response()->json(['error' => 'Images not uploaded'], 400);
     }
 
     /**

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FishStoreRequest;
 use App\Http\Resources\FishResources;
+use App\Http\Resources\PhotoResources;
 use App\Models\Fish;
+use App\Models\Photo;
 
 
 class FishController extends Controller
@@ -25,7 +27,21 @@ class FishController extends Controller
     {
         $fish = Fish::create($request->validated());
 
-        return new FishResources($fish);
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('images', 'public');
+
+                // Create a Photo record associated with the newly created Fish
+                Photo::create([
+                    'fish_id' => $fish->id, // Use the ID of the newly created Fish
+                    'path' => $path,
+                ]);
+            }
+        }
+        // Return the created Fish along with the uploaded photos
+        return response()->json([
+            'fish' => new FishResources($fish),
+        ], 201);
     }
 
     /**
