@@ -90,7 +90,7 @@ export const postFishWithPhotos = async (fishData, images) => {
         console.error('Ошибка при отправке данных:', error.response?.data || error.message);
         throw error; // Пробрасываем ошибку для дальнейшей обработки
     }
-}
+};
 
 export const postRequest = async (request) => {
     try {

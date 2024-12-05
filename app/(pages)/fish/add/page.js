@@ -3,18 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { getFishNames, postFish } from '@/app/api/handlers';
+import { getFishNames, postFish, postFishWithPhotos } from '@/app/api/handlers';
 import { useAuth } from '@/app/context/AuthContext';
 
 const AddFish = () => {
     const { user } = useAuth();
     const [fishNames, setFishNames] = useState([]);
     const [selectedFish, setSelectedFish] = useState('');
-
     const [weight, setWeight] = useState('');
     const [cost_per_kg, setCost] = useState('');
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
+    const [images, setImages] = useState([]); // Состояние для хранения изображений
     const router = useRouter();
 
     useEffect(() => {
@@ -36,21 +36,22 @@ const AddFish = () => {
         setSuccess(null);
 
         try {
-            await postFish(
+            await postFishWithPhotos(
                 {
                     fish_name_id: selectedFish,
                     user_id: user.id,
                     weight: weight,
                     cost_per_kg: cost_per_kg
-                }
+                },
+                images // Передаем изображения в функцию
             );
             router.push('/profile');
 
             setSuccess('Рыба успешно добавлена!');
             setSelectedFish(''); // Очистка выбора
             setCost('');
-            // Очистка формы
             setWeight('');
+            setImages([]); // Очистка изображений
         } catch (error) {
             setError('Ошибка при добавлении рыбы. Попробуйте еще раз.');
         }
@@ -95,6 +96,16 @@ const AddFish = () => {
                             value={cost_per_kg}
                             onChange={(e) => setCost(e.target.value)}
                             required
+                            className="w-full border border-gray-300 p-2 rounded"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 mb-2">Загрузить фото:</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setImages(Array.from(e.target.files))} // Сохраняем все выбранные файлы
+                            multiple // Позволяем выбирать несколько файлов
                             className="w-full border border-gray-300 p-2 rounded"
                         />
                     </div>
