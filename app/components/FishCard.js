@@ -1,9 +1,15 @@
+'use client'
+
 import Slider from 'react-slick'; // Импортируем Slider
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Link from 'next/link';
+import { useAuth } from '../context/AuthContext';
 
 const FishCard = ({ fish }) => {
+    const { user } = useAuth();
+    const isThisUser = user ? (user.id == fish.user.id) : null;
+
     const settings = {
         infinite: true,
         speed: 500,
@@ -14,7 +20,7 @@ const FishCard = ({ fish }) => {
     };
 
     return (
-        <div key={fish.id} className="border rounded-lg p-4 shadow-md transition-transform transform hover:scale-105 ">
+        <div key={fish.id} className="border rounded-lg p-6 shadow-lg transition-transform transform hover:scale-105 bg-white">
             {fish.photos.length > 0 ? (
                 fish.photos.length > 1 ? ( // Проверяем, больше ли одного фото
                     <Slider {...settings}>
@@ -23,7 +29,7 @@ const FishCard = ({ fish }) => {
                                 <img
                                     src={photo.url}
                                     alt={fish.fish_name.name}
-                                    className="w-full h-32 object-cover rounded-md mb-2"
+                                    className="w-full h-48 object-cover rounded-md mb-4 transition-transform duration-300 hover:scale-105"
                                 />
                             </div>
                         ))}
@@ -33,20 +39,37 @@ const FishCard = ({ fish }) => {
                         <img
                             src={fish.photos[0].url} // Отображаем единственное фото
                             alt={fish.fish_name.name}
-                            className="w-full h-32 object-cover rounded-md mb-2"
+                            className="w-full h-48 object-cover rounded-md mb-4 transition-transform duration-300 hover:scale-105"
                         />
                     </div>
                 )
             ) : (
-                <p>Нет доступных фото</p>
+                <div>
+                    <img
+                        src='404.png' // Отображаем единственное фото
+                        alt={fish.fish_name.name}
+                        className="w-full h-48 object-cover rounded-md mb-4 transition-transform duration-300 hover:scale-105"
+                    />
+                </div>
             )}
-            <h2 className="text-lg font-bold">{fish.fish_name.name}</h2>
-            <p><strong>Вес:</strong> {fish.weight} кг</p>
-            <p><strong>Стоимость за кг:</strong> {fish.cost_per_kg} ₽</p>
-            <p><strong>Дата:</strong> {fish.date}</p>
-            <Link href={`/fish/${fish.id}`} className="mt-4 inline-block bg-blue-500 text-white py-2 px-4 rounded">
-                Подробнее
-            </Link>
+            <h2 className="text-xl font-bold mb-2 text-gray-800">{fish.fish_name.name}</h2>
+            <p className="text-lg text-gray-700"><strong>Вес:</strong> {fish.weight} кг</p>
+            <p className="text-lg text-gray-700"><strong>Стоимость за кг:</strong> {fish.cost_per_kg}₽</p>
+            <p className="text-lg text-gray-700"><strong>Дата:</strong> {fish.date}</p>
+            <div className="flex flex-col items-start">
+                <Link href={`/fish/${fish.id}`} className="mt-4 inline-block w-full bg-blue-600 text-white py-3 rounded-lg shadow hover:bg-blue-700 transition duration-200 text-center">
+                    Подробнее
+                </Link>
+                {
+                    user ? (
+                        isThisUser ? null : (
+                            <Link href={`/fish/${fish.id}`} className="mt-2 inline-block w-full bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition duration-200 text-center">
+                                Заказать
+                            </Link>
+                        )
+                    ) : null
+                }
+            </div>
         </div>
     );
 };

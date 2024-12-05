@@ -24,7 +24,7 @@ const Catalog = () => {
                         <h1 className="text-2xl font-semibold mb-2">Рыбы</h1>
                         <div className="grid grid-cols-1 sm:grid-cols-4 lg:grid-cols-3 gap-4">
                             {fishes.length > 0 ? (
-                                fishes.map((fish) => (
+                                fishes.slice().reverse().map((fish) => (
                                     <FishCard key={fish.id} fish={fish} />
                                 ))
                             ) : (
