@@ -24,7 +24,7 @@ class UserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'place' => 'required|string|max:255',
-            'number' => 'required|string|max:11|unique:users', // Убедитесь, что это поле уникально
+            'phone' => 'required|string|max:11|unique:users', // Убедитесь, что это поле уникально
             'password' => 'required|string|min:8',
             'password_confirmation' => 'required|string|min:8',
         ];

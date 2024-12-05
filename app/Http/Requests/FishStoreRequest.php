@@ -26,6 +26,8 @@ class FishStoreRequest extends FormRequest
             "user_id" => 'required|integer',
             "weight" => 'required|numeric',
             "cost_per_kg" => 'required|numeric',
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }
