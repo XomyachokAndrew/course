@@ -37,7 +37,7 @@ const Register = () => {
                 <h1 className="text-2xl font-bold mb-6 text-center text-[#0013FF]">Регистрация</h1>
                 <form onSubmit={handleRegister}>
                     <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700">Имя:</label>
+                        <label className="block text-sm font-medium text-gray-700">ФИО:</label>
                         <input
                             type="text"
                             value={name}

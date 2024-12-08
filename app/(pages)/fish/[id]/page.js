@@ -106,7 +106,13 @@ const Fish = ({ params }) => {
                 <p className="text-lg text-gray-700"><strong>Где продает:</strong> {fish.user.place}</p>
                 <div className="flex flex-col items-start">
                     {user && !isThisUser && (
-                        <Link href={`/fish/${fish.id}`} className="mt-2 inline-block w-full bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition duration-200 text-center">
+                        <Link href={{
+                            pathname: `/orders/add/`,
+                            query: {
+                                fishId: fish.id,
+                            }
+                        }}
+                            className="mt-2 inline-block w-full bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition duration-200 text-center">
                             Заказать
                         </Link>
                     )}

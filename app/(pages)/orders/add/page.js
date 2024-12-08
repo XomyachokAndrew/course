@@ -35,7 +35,6 @@ const OrderPage = () => {
 
     const handleChange = (e) => {
         const value = e.target.value;
-
         setWeight(value);
     };
 

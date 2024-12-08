@@ -17,10 +17,6 @@ const Request = ({ params }) => {
                 try {
                     const id = (await params).id;
                     const response = await getRequest(id);
-                    console.log(response);
-
-                    
-
                     setRequest(response);
                 } catch (error) {
                     setError('Ошибка при загрузке названий рыб');

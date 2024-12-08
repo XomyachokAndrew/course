@@ -8,7 +8,7 @@ import FishCard from '@/app/components/FishCard';
 import RequestCard from '@/app/components/RequestCard';
 
 const Profile = () => {
-    const { token, user, logout } = useAuth();
+    const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [fishes, setFishes] = useState([]);
     const [requests, setRequests] = useState([]);
@@ -116,7 +116,7 @@ const RequestSection = ({ requests }) => {
         <div className='max-w-2xl mx-auto mt-12 h-96'>
             <div className="p-6 bg-white rounded-lg shadow-md ">
                 <div>
-                    <h1 className="text-2xl font-semibold mb-2">Мои заказы</h1>
+                    <h1 className="text-2xl font-semibold mb-2">Мои запросы</h1>
                     <div className="border rounded-lg p-4 h-full flex flex-col justify-between">
                         {
                             requests.length > 0 ? (
@@ -139,7 +139,7 @@ const FishSection = ({ fishes }) => {
         <div className='max-w-2xl mx-auto h-96 mt-12'>
             <div className="p-6 bg-white rounded-lg shadow-md">
                 <div className="mt-6">
-                    <h1 className="text-2xl font-semibold mb-2">Мои рыбы</h1>
+                    <h1 className="text-2xl font-semibold mb-2">Мой улов</h1>
                     <div className="border rounded-lg p-4 h-full flex flex-col justify-between">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 h-full">
                             {fishes.length > 0 ? (

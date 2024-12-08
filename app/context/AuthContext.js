@@ -80,7 +80,6 @@ export const AuthProvider = ({ children }) => {
             setToken(null);
             setUser(null);
         } catch (error) {
-            console.error('Logout failed', error);
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             setToken(null);

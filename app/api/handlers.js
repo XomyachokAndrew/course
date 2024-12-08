@@ -37,7 +37,6 @@ export const getFish = async (id) => {
     }
 };
 
-
 export const getFishUser = async (id) => {
     try {
         const response = await axios.get(`/user/fishes/${id}`);
@@ -71,6 +70,16 @@ export const getRequest = async (id) => {
 export const getRequestUser = async (id) => {
     try {
         const response = await axios.get(`/user/requests/${id}`);
+        const options = response.data.data;
+        return options;
+    } catch (error) {
+        console.error('qwe', error);
+    }
+};
+
+export const getOrderUser = async (id) => {
+    try {
+        const response = await axios.get(`/user/orders/${id}`);
         const options = response.data.data;
         return options;
     } catch (error) {
