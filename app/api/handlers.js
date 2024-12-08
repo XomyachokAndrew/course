@@ -129,5 +129,23 @@ export const postRequest = async (request) => {
         console.error('Ошибка при отправке данных:', error.response?.data || error.message);
         throw error; // Пробрасываем ошибку для дальнейшей обработки
     }
-}
+};
+
+export const postOrder = async (order) => {
+    try {
+        const csrfToken = await csrf_token();
+        const token = localStorage.getItem('token');
+        const response = await axios.post('/orders', order, {
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка при отправке данных:', error.response?.data || error.message);
+        throw error; // Пробрасываем ошибку для дальнейшей обработки
+    }
+};
 //#endregion

@@ -5,10 +5,12 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 const FishCard = ({ fish }) => {
     const { user } = useAuth();
     const isThisUser = user ? (user.id == fish.user.id) : null;
+    const router = useRouter();
 
     const settings = {
         infinite: true,
@@ -17,6 +19,17 @@ const FishCard = ({ fish }) => {
         slidesToScroll: 1,
         prevArrow: <SamplePrevArrow />,
         nextArrow: <SampleNextArrow />,
+    };
+
+    const handleAddOrder = () => {
+        router.push(
+            '/orders/add/',
+            {
+                fishId: fish.id,
+                fishName: fish.name,
+                fishDescription: fish.description,
+            },
+        ); // Перенаправление на страницу добавления рыбы
     };
 
     return (
@@ -63,7 +76,12 @@ const FishCard = ({ fish }) => {
                 {
                     user ? (
                         isThisUser ? null : (
-                            <Link href={`/fish/${fish.id}`} className="mt-2 inline-block w-full bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition duration-200 text-center">
+                            <Link href={{
+                                pathname: `/orders/add/`,
+                                query: {
+                                  fishId: fish.id,
+                                }
+                              }} className="mt-2 inline-block w-full bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition duration-200 text-center">
                                 Заказать
                             </Link>
                         )
