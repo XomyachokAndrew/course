@@ -15,6 +15,13 @@ const OrderPage = () => {
         weight: 0,
         cost_per_kg: 0,
     });
+
+    useEffect(() => {
+        if (!user) {
+            router.push('/login');
+        }
+    });
+
     const router = useRouter();
 
     useEffect(() => {

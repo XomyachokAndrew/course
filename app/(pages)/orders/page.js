@@ -1,15 +1,19 @@
 'use client'
 
-import FishCard from "@/app/components/FishCard";
 import OrderCard from "@/app/components/OrderCard";
-import RequestCard from "@/app/components/RequestCard"; // Импортируйте компонент для отображения запросов
 import { useAuth } from "@/app/context/AuthContext";
-const { getFishes, getRequests, getOrderUser } = require("@/app/api/handlers");
+const { getOrderUser } = require("@/app/api/handlers");
 const { useEffect, useState } = require("react");
 
 const Catalog = () => {
     const { user } = useAuth();
     const [orders, setOrders] = useState([]);
+
+    useEffect(() => {
+        if (!user) {
+            router.push('/login');
+        }
+    });
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -35,7 +39,6 @@ const Catalog = () => {
                                 <p className="text-gray-500">Нет рыб.</p>
                             )}
                         </div>
-
                     </div>
                 </div>
             </div>
