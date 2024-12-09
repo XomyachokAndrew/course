@@ -20,7 +20,7 @@ class Order extends Model
 
     public function fish() 
     {
-        return $this->belongsTo(Fish::class, 'fish_name_id');
+        return $this->belongsTo(Fish::class, 'fish_id');
     }
 
     public function user() 
