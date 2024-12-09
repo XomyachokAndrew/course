@@ -24,30 +24,17 @@ const Profile = () => {
     }, [user, router]); // Добавлен user и router в зависимости
 
     useEffect(() => {
-        const fetchFishes = async () => {
-            if (user) {
-                try {
-                    const response = await getFishUser(user.id);
-                    setFishes(response);
-                } catch (error) {
-                    setError('Ошибка при загрузке названий рыб');
-                }
+        const fetchData = async (fetchFunction, setData, errorMessage) => {
+            try {
+                const response = await fetchFunction(user.id);
+                setData(response);
+            } catch (error) {
+                setError(errorMessage);
             }
         };
 
-        const fetchRequests = async () => {
-            if (user) {
-                try {
-                    const response = await getRequestUser(user.id);
-                    setRequests(response);
-                } catch (error) {
-                    setError('Ошибка при загрузке названий рыб');
-                }
-            }
-        };
-
-        fetchFishes();
-        fetchRequests();
+        fetchData(getFishUser, setFishes, 'Ytn');
+        fetchData(getRequestUser, setRequests, 'Ytn');
     }, [user]); // Добавлен user в зависимости
 
     if (loading) {
@@ -58,7 +45,9 @@ const Profile = () => {
         return <div>Please log in to view your profile.</div>;
     }
 
-
+    if (error) {
+        return <div className="text-red-500">{error}</div>;
+    }
 
     return (
         <div className="flex items-center justify-center min-h-screen mt-16"> {/* Добавлен отступ сверху */}
@@ -83,6 +72,10 @@ const ProfileInfo = ({ user, router }) => {
         router.push('/request/add/'); // Перенаправление на страницу добавления рыбы
     };
 
+    const handleOrder = () => {
+        router.push('/orders/'); // Перенаправление на страницу добавления рыбы
+    };
+
     return (
         <div className='absolute left-0 top-0'>
             <div className=" max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md ml-16 mt-24">
@@ -99,10 +92,16 @@ const ProfileInfo = ({ user, router }) => {
                         Добавить запрос
                     </button>
                     <button
-                        className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+                        className="mr-2 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
                         onClick={handleAddFish} // Добавлен обработчик события
                     >
                         Добавить рыбу
+                    </button>
+                    <button
+                        className="mr-2 bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 transition duration-200"
+                        onClick={handleOrder} // Добавлен обработчик события
+                    >
+                        Мои заказы
                     </button>
                 </div>
             </div>
@@ -113,9 +112,9 @@ const ProfileInfo = ({ user, router }) => {
 
 const RequestSection = ({ requests }) => {
     return (
-        <div className='max-w-2xl mx-auto mt-12 h-96'>
-            <div className="p-6 bg-white rounded-lg shadow-md ">
-                <div>
+        <div className='left-0'>
+            <div className='max-w-2xl mx-auto ml-16 mt-12 h-96'>
+                <div className="p-6 bg-white rounded-lg shadow-md">
                     <h1 className="text-2xl font-semibold mb-2">Мои запросы</h1>
                     <div className="border rounded-lg p-4 h-full flex flex-col justify-between">
                         {
@@ -131,12 +130,13 @@ const RequestSection = ({ requests }) => {
                 </div>
             </div>
         </div>
+
     );
 };
 
 const FishSection = ({ fishes }) => {
     return (
-        <div className='max-w-2xl mx-auto h-96 mt-12'>
+        <div className='max-w-3xl mx-auto h-96 mt-12'> {/* Увеличена максимальная ширина */}
             <div className="p-6 bg-white rounded-lg shadow-md">
                 <div className="mt-6">
                     <h1 className="text-2xl font-semibold mb-2">Мой улов</h1>

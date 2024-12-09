@@ -86,6 +86,16 @@ export const getOrderUser = async (id) => {
         console.error('qwe', error);
     }
 };
+
+export const getOrderFish = async (id) => {
+    try {
+        const response = await axios.get(`/fish/orders/${id}`);
+        const options = response.data.data;
+        return options;
+    } catch (error) {
+        console.error('qwe', error);
+    }
+};
 //#endregion
 
 //#region POST
