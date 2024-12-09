@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FishStoreRequest;
 use App\Http\Resources\FishResources;
-use App\Http\Resources\PhotoResources;
+use App\Http\Resources\OrderResources;
 use App\Models\Fish;
+use App\Models\Order;
 use App\Models\Photo;
 
 
@@ -70,5 +71,10 @@ class FishController extends Controller
         $fish->delete();
 
         return response(null, 204);
+    }
+
+    public function orders($id) 
+    {
+        return OrderResources::collection(Order::where('fish_id', '=', $id)->get());   
     }
 }

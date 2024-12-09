@@ -58,3 +58,5 @@ Route::get('fishes/{id}', [FishController::class, 'show']);
 
 Route::get('user/fishes/{id}', [UserValuesController::class, 'index']);
 Route::get('user/requests/{id}', [UserValuesController::class, 'requests']);
+Route::get('user/orders/{id}', [UserValuesController::class, 'orders']);
+Route::get('fish/orders/{id}', [FishController::class, 'orders']);
