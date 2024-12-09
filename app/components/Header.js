@@ -24,11 +24,11 @@ const Header = () => {
                     <ul className="flex space-x-6">
                         {user ? (
                             <>
-                                {isAdmin() ? (
+                                {/* {isAdmin() ? (
                                     <li>
                                         <Link className="hover:text-[#FFA100] transition duration-200" href='/admin'>Админ</Link>
                                     </li>
-                                ) : null}
+                                ) : null} */}
                                 <li>
                                     <Link className="hover:text-[#FFA100] transition duration-200" href="/profile">
                                         Профиль
