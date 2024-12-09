@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
-import { getFishNames, postFish, postFishWithPhotos } from '@/app/api/handlers';
+import { getFishNames, postFishWithPhotos } from '@/app/api/handlers';
 import { useAuth } from '@/app/context/AuthContext';
 
 const AddFish = () => {
@@ -16,6 +15,12 @@ const AddFish = () => {
     const [success, setSuccess] = useState(null);
     const [images, setImages] = useState([]); // Состояние для хранения изображений
     const router = useRouter();
+
+    useEffect(() => {
+        if (!user) {
+            router.push('/login');
+        }
+    });
 
     useEffect(() => {
         const fetchFishNames = async () => {
