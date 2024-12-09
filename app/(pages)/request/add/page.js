@@ -19,6 +19,12 @@ const AddFish = () => {
 
     useEffect(() => {
         if (user) {
+            router.push('/login');
+        }
+    });
+
+    useEffect(() => {
+        if (user) {
             setRequest(prevData => ({ ...prevData, user_id: user.id }));
         }
     }, [user]);
