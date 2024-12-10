@@ -8,6 +8,7 @@ const Login = () => {
     const { login,user } = useAuth();
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const router = useRouter();
 
     useEffect(() => {
@@ -23,7 +24,7 @@ const Login = () => {
 
             router.push('/profile');
         } catch (error) {
-            console.error(error.message);
+            setError('Данные введены неверно');
         }
     };
 
@@ -31,6 +32,7 @@ const Login = () => {
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="bg-[#F8F9FA] p-8 rounded-lg shadow-md w-96">
                 <h1 className="text-2xl font-bold mb-6 text-center text-[#0013FF]">Вход</h1>
+                {error && <p className="text-red-500 text-center mb-4">{error}</p>} {/* Вывод ошибки */}
                 <form onSubmit={handleLogin}>
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700">Номер телефона</label>
