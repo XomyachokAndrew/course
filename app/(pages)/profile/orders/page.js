@@ -27,7 +27,7 @@ const Catalog = () => {
         fetchOrders();
     }, []);
 
-    return (
+    return ( 
         <div>
             <div className="flex items-center justify-center min-h-screen">
                 <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-16">
@@ -39,7 +39,7 @@ const Catalog = () => {
                                     <OrderCard key={order.id} order={order} />
                                 ))
                             ) : (
-                                <p className="text-gray-500">Нет рыб.</p>
+                                <p className="text-gray-500">У вас нет заказов.</p>
                             )}
                         </div>
                     </div>
