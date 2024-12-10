@@ -1,68 +1,71 @@
 'use client';
-
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '@/app/context/AuthContext'; // Путь к вашему AuthProvider
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getFishUser, getRequestUser } from '@/app/api/handlers';
+import { useAuth } from '@/app/context/AuthContext';
 import FishCard from '@/app/components/FishCard';
 import RequestCard from '@/app/components/RequestCard';
+import { getFishUser, getRequestUser } from '@/app/api/handlers';
 
 const Profile = () => {
-    const { user } = useAuth();
-    const [loading, setLoading] = useState(true);
-    const [fishes, setFishes] = useState([]);
-    const [requests, setRequests] = useState([]);
-    const [error, setError] = useState(null);
+    const { user, logout } = useAuth();
+    const [fishData, setFishData] = useState([]); // Состояние для данных о рыбе
+    const [requestData, setRequestData] = useState([]); // Состояние для данных о запросах
     const router = useRouter();
 
     useEffect(() => {
         if (!user) {
-            router.push('/login');
+            router.push('/login'); // Перенаправление на страницу входа, если пользователь не аутентифицирован
         } else {
-            setLoading(false);
+            // Заполнение полей данными пользователя
+            const fetchUserData = async () => {
+                try {
+                    const fishResponse = await getFishUser(user.id); // Предполагается, что у вас есть id пользователя
+                    const requestResponse = await getRequestUser(user.id);
+                    setFishData(fishResponse);
+                    setRequestData(requestResponse);
+                } catch (error) {
+                    console.error('Ошибка при получении данных:', error);
+                }
+            };
+            fetchUserData(); // Получение данных о рыбе и запросах
         }
-    }, [user, router]); // Добавлен user и router в зависимости
-
-    useEffect(() => {
-        const fetchData = async (fetchFunction, setData, errorMessage) => {
-            try {
-                const response = await fetchFunction(user.id);
-                setData(response);
-            } catch (error) {
-                setError(errorMessage);
-            }
-        };
-
-        fetchData(getFishUser, setFishes, 'Ytn');
-        fetchData(getRequestUser, setRequests, 'Ytn');
-    }, [user]); // Добавлен user в зависимости
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (!user) {
-        return <div>Please log in to view your profile.</div>;
-    }
-
-    if (error) {
-        return <div className="text-red-500">{error}</div>;
-    }
+    }, [user, router]);
 
     return (
-        <div className="flex items-center justify-center min-h-screen mt-16"> {/* Добавлен отступ сверху */}
+        <div className="flex items-center justify-center min-h-screen mt-16 ml-12">
+            {/* Секция профиля */}
+            <ProfileSection user={user} logout={logout} router={router} />
 
-            <ProfileInfo user={user} router={router} />
+            {/* Секция с FishCard */}
+            <FishSection fishes={fishData} />
 
-            <RequestSection requests={requests} />
-
-            <FishSection fishes={fishes} />
-
+            {/* Секция с RequestCard */}
+            <RequestSection requests={requestData} />
         </div>
     );
 };
 
-const ProfileInfo = ({ user, router }) => {
+const ProfileSection = ({ user, logout, router }) => {
+    const [name, setName] = useState('');
+    const [place, setPlace] = useState('');
+    const [phone, setPhone] = useState('');
+
+    useEffect(() => {
+        setName(user.name);
+        setPlace(user.place);
+        setPhone(user.phone);
+    }, [user, router]);
+
+    const handleLogout = async () => {
+        await logout();
+        router.push('/login'); // Перенаправление на главную страницу после выхода
+    };
+
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        // Здесь вы можете добавить логику для обновления профиля пользователя
+        console.log('Обновление профиля:', { name, place, phone });
+    };
 
     const handleAddFish = () => {
         router.push('/fish/add/'); // Перенаправление на страницу добавления рыбы
@@ -76,85 +79,120 @@ const ProfileInfo = ({ user, router }) => {
         router.push('/orders/'); // Перенаправление на страницу добавления рыбы
     };
 
-    return (
-        <div className='absolute left-0 top-0'>
-            <div className=" max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md ml-16 mt-24">
-                <h1 className="text-3xl font-bold mb-4">Профиль</h1>
-                <h2 className="text-2xl font-semibold mb-2">Информация о вас:</h2>
-                <p className="mb-2"><strong>Имя:</strong> {user.name}</p>
-                <p className="mb-4"><strong>Телефон:</strong> {user.phone}</p>
 
+    return (
+        <div id='profile' className="bg-white p-8 rounded-lg shadow-md w-96">
+            <h1 className="text-2xl font-bold mb-6 text-center text-[#0013FF]">Профиль</h1>
+
+            {/* Вывод фото пользователя */}
+            {user.photo && (
+                <div className="mb-4 text-center">
+                    <img
+                        src={user.photo} // Предполагается, что путь к изображению относительный
+                        alt="User Photo"
+                        className="w-24 h-24 rounded-full mx-auto mb-4" // Стили для изображения
+                    />
+                </div>
+            )}
+
+            <form onSubmit={handleUpdateProfile}>
                 <div className="mb-4">
-                    <button
-                        className="mr-2 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200"
-                        onClick={handleAddRequest}
-                    >
-                        Добавить запрос
-                    </button>
-                    <button
-                        className="mr-2 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
-                        onClick={handleAddFish} // Добавлен обработчик события
-                    >
-                        Добавить рыбу
-                    </button>
-                    <button
-                        className="mr-2 bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 transition duration-200"
-                        onClick={handleOrder} // Добавлен обработчик события
-                    >
-                        Мои заказы
-                    </button>
+                    <label className="block text-sm font-medium text-gray-700">ФИО:</label>
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#0066FF]"
+                        required
+                    />
                 </div>
-            </div>
-        </div>
-
-    );
-};
-
-const RequestSection = ({ requests }) => {
-    return (
-        <div className='left-0'>
-            <div className='max-w-2xl mx-auto ml-16 mt-12 h-96'>
-                <div className="p-6 bg-white rounded-lg shadow-md">
-                    <h1 className="text-2xl font-semibold mb-2">Мои запросы</h1>
-                    <div className="border rounded-lg p-4 h-full flex flex-col justify-between">
-                        {
-                            requests.length > 0 ? (
-                                requests.slice().reverse().map((request) => ( // Сортировка в обратном порядке
-                                    <RequestCard key={request.id} request={request} />
-                                ))
-                            ) : (
-                                <p className="text-gray-500">Здесь будут ваши заказы.</p>
-                            )
-                        }
-                    </div>
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">Место:</label>
+                    <input
+                        type="text"
+                        value={place}
+                        onChange={(e) => setPlace(e.target.value)}
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#0066FF]"
+                    />
                 </div>
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">Номер телефона:</label>
+                    <input
+                        type="text"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#0066FF]"
+                        required
+                    />
+                </div>
+                <button
+                    type="submit"
+                    className="w-full bg-[#0066FF] text-white font-semibold py-2 rounded-md hover:bg-[#0013FF] transition duration-200"
+                >
+                    Обновить профиль
+                </button>
+            </form>
+            <div className="mt-4 text-center">
+                <button onClick={handleLogout} className="text-[#0066FF] hover:text-[#0013FF] transition duration-200">
+                    Выйти
+                </button>
             </div>
+            <div className="mt-2 mb-4">
+                <button
+                    className="mr-2 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200"
+                    onClick={handleAddRequest}
+                >
+                    Добавить запрос
+                </button>
+                <button
+                    className="mr-2 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+                    onClick={handleAddFish} // Добавлен обработчик события
+                >
+                    Добавить рыбу
+                </button>
+            </div>
+            <button
+                className="mr-2 bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 transition duration-200"
+                onClick={handleOrder} // Добавлен обработчик события
+            >
+                Мои заказы
+            </button>
         </div>
-
     );
-};
+}
 
 const FishSection = ({ fishes }) => {
     return (
-        <div className='max-w-3xl mx-auto h-96 mt-12'> {/* Увеличена максимальная ширина */}
-            <div className="p-6 bg-white rounded-lg shadow-md">
-                <div className="mt-6">
-                    <h1 className="text-2xl font-semibold mb-2">Мой улов</h1>
-                    <div className="border rounded-lg p-4 h-full flex flex-col justify-between">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 h-full">
-                            {fishes.length > 0 ? (
-                                fishes.slice().reverse().map((fish) => ( // Сортировка в обратном порядке
-                                    <FishCard key={fish.id} fish={fish} />
-                                ))
-                            ) : (
-                                <p className="text-gray-500">У вас нет рыб.</p>
-                            )}
-                        </div>
-                    </div>
-                </div>
+        <div className="max-w-2xl mx-auto ml-16 mt-12 h-96">
+            <h2 className="text-xl font-bold mb-4 text-center">Мой улов</h2>
+            <div className="grid grid-cols-2 gap-4 auto-rows-fr"> {/* Две колонки для рыбы */}
+                {fishes.length > 0 ? (
+                    fishes.slice().reverse().map((fish) => (
+                        <FishCard key={fish.id} fish={fish} /> // Предполагается, что у каждого объекта fish есть уникальный id
+                    ))
+                ) : (
+                    <p className="text-center text-gray-500">Нет данных о рыбе.</p>
+                )}
             </div>
         </div>
     );
-};
+}
+
+const RequestSection = ({ requests }) => {
+    return (
+        <div className="max-w-xl mx-auto ml-16 mt-12 h-96">
+            <h2 className="text-xl font-bold mb-4 text-center">Мои Запросы</h2>
+            <div className="grid grid-cols-1 gap-4"> {/* Один элемент в строке для запросов */}
+                {requests.length > 0 ? (
+                    requests.map((request) => (
+                        <RequestCard key={request.id} request={request} /> // Предполагается, что у каждого объекта request есть уникальный id
+                    ))
+                ) : (
+                    <p className="text-center text-gray-500">Нет данных о запросах.</p>
+                )}
+            </div>
+        </div>
+    );
+}
 
 export default Profile;
