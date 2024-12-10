@@ -13,8 +13,8 @@ const Header = () => {
     };
 
     return (
-        <header className="bg-[#0066FF] text-white py-6 fixed top-0 left-0 w-full z-50"> {/* Добавлено фиксированное позиционирование */}
-            <div className="container mx-auto flex justify-between items-center px-6">
+        <header className="bg-[#0066FF] text-white py-6 fixed top-0 left-0 w-full z-50">
+            <div className="container mx-auto flex justify-between items-center">
                 <h1 className="text-3xl font-bold">
                     <Link href="/" className="hover:text-[#FFA100] transition duration-200">
                         Рыбный Мост
@@ -24,11 +24,11 @@ const Header = () => {
                     <ul className="flex space-x-6">
                         {user ? (
                             <>
-                                {/* {isAdmin() ? (
+                                {isAdmin() ? (
                                     <li>
                                         <Link className="hover:text-[#FFA100] transition duration-200" href='/admin'>Админ</Link>
                                     </li>
-                                ) : null} */}
+                                ) : null}
                                 <li>
                                     <Link className="hover:text-[#FFA100] transition duration-200" href="/profile">
                                         Профиль
