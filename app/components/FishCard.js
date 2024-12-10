@@ -1,6 +1,5 @@
 'use client'
 
-
 import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
 import PhotoCard from './PhotoCard';

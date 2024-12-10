@@ -1,0 +1,24 @@
+.custom-arrow {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1; /* Убедитесь, что z-index достаточно высок */
+    transition: background 0.3s;
+}
+
+.custom-arrow:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+.custom-prev {
+    left: 10px; /* Положение стрелки влево */
+}
+
+.custom-next {
+    right: 10px; /* Положение стрелки вправо */
+}
