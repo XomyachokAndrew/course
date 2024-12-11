@@ -13,6 +13,7 @@ class Fish extends Model
     protected $fillable = [
         'fish_name_id',
         'user_id',
+        'type_id',
         'weight',
         'cost_per_kg',
     ];
@@ -22,6 +23,11 @@ class Fish extends Model
     public function fishName() 
     {
         return $this->belongsTo(FishName::class, 'fish_name_id');
+    }
+
+    public function type() 
+    {
+        return $this->belongsTo(Type::class, 'type_id');
     }
 
     public function photos() 
