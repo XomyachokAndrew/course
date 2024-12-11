@@ -13,14 +13,12 @@ const Request = ({ params }) => {
 
     useEffect(() => {
         const fetchRequest = async () => {
-            if (user) {
-                try {
-                    const id = (await params).id;
-                    const response = await getRequest(id);
-                    setRequest(response);
-                } catch (error) {
-                    setError('Ошибка при загрузке названий рыб');
-                }
+            try {
+                const id = (await params).id;
+                const response = await getRequest(id);
+                setRequest(response);
+            } catch (error) {
+                setError('Ошибка при загрузке названий рыб');
             }
         };
 
@@ -32,11 +30,11 @@ const Request = ({ params }) => {
         month: 'long', // 'short' для сокращенного названия месяца
         day: 'numeric'
     });
-    
+
     return (
-        <div className="flex items-center justify-center min-h-screen mt-16">
-            <div className="max-w-2xl border rounded-lg p-6 shadow-md mb-4 bg-white min-w-96">
-                <h1 className="text-3xl font-bold mb-4">Заказ: {request.title}</h1>
+        <div className="flex items-center justify-center min-h-screen px-4">
+            <div className="max-w-2xl w-full border rounded-lg p-6 shadow-md mb-4 bg-white min-w-96">
+                <h1 className="text-3xl font-bold mb-4">{request.title}</h1>
                 <div className="mt-6">
                     <div className="border-t border-gray-200 mt-2 pt-2">
                         <div className="text-gray-600 break-words">

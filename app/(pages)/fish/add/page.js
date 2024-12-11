@@ -2,27 +2,37 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getFishNames, postFishWithPhotos } from '@/app/api/handlers';
+import { getFishNames, getTypes, postFishWithPhotos } from '@/app/api/handlers';
 import { useAuth } from '@/app/context/AuthContext';
 
 const AddFish = () => {
     const { user } = useAuth();
     const [fishNames, setFishNames] = useState([]);
+    const [fishTypes, setFishTypes] = useState([]); // Пример типов рыбы
     const [selectedFish, setSelectedFish] = useState('');
+    const [selectedType, setSelectedType] = useState(''); // Состояние для хранения выбранного типа
     const [weight, setWeight] = useState('');
     const [cost_per_kg, setCost] = useState('');
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
-    const [images, setImages] = useState([]); // Состояние для хранения изображений
+    const [images, setImages] = useState([]);
     const router = useRouter();
 
     useEffect(() => {
         if (!user) {
             router.push('/login');
         }
-    });
+    }, [user, router]);
 
     useEffect(() => {
+        const fetchTypes = async () => {
+            try {
+                const response = await getTypes();
+                setFishTypes(response);
+            } catch (error) {
+                setError('Ошибка при загрузке названий рыб');
+            }
+        };
         const fetchFishNames = async () => {
             try {
                 const response = await getFishNames();
@@ -32,6 +42,7 @@ const AddFish = () => {
             }
         };
 
+        fetchTypes();
         fetchFishNames();
     }, []);
 
@@ -44,19 +55,21 @@ const AddFish = () => {
             await postFishWithPhotos(
                 {
                     fish_name_id: selectedFish,
+                    type_id: selectedType, // Передаем выбранный тип
                     user_id: user.id,
                     weight: weight,
                     cost_per_kg: cost_per_kg
                 },
-                images // Передаем изображения в функцию
+                images
             );
             router.push('/profile');
 
             setSuccess('Рыба успешно добавлена!');
-            setSelectedFish(''); // Очистка выбора
+            setSelectedFish('');
+            setSelectedType(''); // Очистка выбора типа
             setCost('');
             setWeight('');
-            setImages([]); // Очистка изображений
+            setImages([]);
         } catch (error) {
             setError('Ошибка при добавлении рыбы. Попробуйте еще раз.');
         }
@@ -70,11 +83,26 @@ const AddFish = () => {
                 {success && <p className="text-green-500 mb-4">{success}</p>}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
+                        <label className="block text-gray-700 mb-2">Тип рыбы:</label>
+                        <select
+                            value={selectedType}
+                            onChange={(e) => setSelectedType(e.target.value)}
+                            className="w-full border border-gray-300 p-2 rounded"
+                            required
+                        >
+                            <option value="">Выберите тип</option>
+                            {fishTypes.map((type) => (
+                                <option key={type.name} value={type.id}>{type.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="mb-4">
                         <label className="block text-gray-700 mb-2">Название:</label>
                         <select
                             value={selectedFish}
                             onChange={(e) => setSelectedFish(e.target.value)}
                             className="w-full border border-gray-300 p-2 rounded"
+                            required
                         >
                             <option value="">Выберите название</option>
                             {fishNames.map((fish) => (
