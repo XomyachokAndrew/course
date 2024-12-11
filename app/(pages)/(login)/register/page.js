@@ -13,6 +13,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [photo, setPhoto] = useState(null); // Состояние для хранения фото
     const router = useRouter();
+    const [error, setError] = useState('');
 
     useEffect(() => {
         if (user) {
@@ -32,18 +33,14 @@ const Register = () => {
         if (photo) {
             formData.append('photo', photo); // Добавляем фото в FormData
         }
-        console.log(formData.getAll('name'));
-        console.log(formData.getAll('place'));
-        console.log(formData.getAll('phone'));
-        console.log(formData.getAll('password'));
-        console.log(formData.getAll('password_confirmation'));
-        console.log(formData.getAll('photo'));
+        
         try {
             await register(formData); // Предполагается, что register принимает FormData
             await login(phone, password);
             router.push('/profile');
         } catch (error) {
             console.error(error.message);
+            setError('Данные введены неверно');
         }
     }
 
@@ -51,6 +48,7 @@ const Register = () => {
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-md w-96">
                 <h1 className="text-2xl font-bold mb-6 text-center text-[#0013FF]">Регистрация</h1>
+                {error && <p className="text-red-500 text-center mb-4">{error}</p>} {/* Вывод ошибки */}
                 <form onSubmit={handleRegister}>
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700">ФИО:</label>

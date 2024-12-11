@@ -47,7 +47,7 @@ export default function Home() {
       </main>
 
       <footer className="mt-10 text-center text-gray-600">
-        <p>© 2023 Рыбный Мост. Все права защищены.</p>
+        <p>© 2024 Рыбный Мост. Все права защищены.</p>
       </footer>
     </div>
   );
