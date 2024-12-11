@@ -2,7 +2,14 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { getUsers, deleteUser, getFishUser, deleteFish, getOrderUser, deleteOrder, getOrderFish, getPhotosFish, deletePhoto, getRequests, getRequestUser, deleteRequest } from "@/app/api/handlers";
+import {
+    getOrderFish,
+    getUsers, deleteUser,
+    getFishUser, deleteFish,
+    getOrderUser, deleteOrder,
+    getPhotosFish, deletePhoto,
+    getRequestUser, deleteRequest
+} from "@/app/api/handlers";
 
 const AdminPage = () => {
     const { user, logout, isAdmin } = useAuth();
@@ -11,22 +18,22 @@ const AdminPage = () => {
     const router = useRouter();
 
     useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await getUsers();
+                setUsers(response);
+            } catch (error) {
+                console.error('Ошибка при получении пользователей:', error);
+                setError('Не удалось загрузить пользователей');
+            }
+        };
+
         if (!user || !isAdmin()) {
             router.push('/login'); // Перенаправление на страницу входа, если пользователь не администратор
         } else {
             fetchUsers(); // Получение списка пользователей
         }
     }, [user, router]);
-
-    const fetchUsers = async () => {
-        try {
-            const response = await getUsers();
-            setUsers(response);
-        } catch (error) {
-            console.error('Ошибка при получении пользователей:', error);
-            setError('Не удалось загрузить пользователей');
-        }
-    };
 
     const handleLogout = async () => {
         await logout();
@@ -36,19 +43,16 @@ const AdminPage = () => {
     const handleDeleteUser = async (userId) => {
         try {
             const fishes = await getFishUser(userId);
-// console.log(fishes);
 
             if (fishes) {
                 fishes.map(async (fish) => {
                     const photos = await getPhotosFish(fish.id);
-console.log(photos);
 
                     photos.map(async (photo) => {
                         await deletePhoto(photo.id);
                     });
 
                     const ordersFish = await getOrderFish(fish.id);
-console.log(ordersFish);
 
                     if (ordersFish) {
                         ordersFish.map(async (order) => {
@@ -93,15 +97,18 @@ console.log(ordersFish);
                 <ul className="space-y-2">
                     {users.length > 0 ? (
                         users.map((item) => (
-                            <li key={item.id} className="border-b py-2 flex justify-between items-center">
-                                <span>{item.name} - {item.number}</span>
-                                <button
-                                    onClick={() => handleDeleteUser(item.id)}
-                                    className="text-red-500 hover:text-red-700"
-                                >
-                                    Удалить
-                                </button>
-                            </li>
+                            item.id == user.id ? null : (
+                                <li key={item.id} className="border-b py-2 flex justify-between items-center">
+                                    <span>{item.name} - {item.number}</span>
+                                    <button
+                                        onClick={() => handleDeleteUser(item.id)}
+                                        className="text-red-500 hover:text-red-700"
+                                    >
+                                        Удалить
+                                    </button>
+                                </li>
+                            )
+
                         ))
                     ) : (
                         <p className="text-center text-gray-500">Нет пользователей.</p>
