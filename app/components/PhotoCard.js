@@ -28,7 +28,6 @@ const CustomNextArrow = (props) => {
     );
 };
 
-
 const PhotoCard = ({ photos, fishName }) => {
     const settings = {
         infinite: true,
@@ -48,7 +47,8 @@ const PhotoCard = ({ photos, fishName }) => {
                             <img
                                 src={photo.url}
                                 alt={fishName}
-                                className="w-full h-48 object-cover rounded-md mb-4 transition-transform duration-300"
+                                className="w-full h-48 sm:h-56 md:h-64 lg:h-72 object-cover rounded-md mb-4 transition-transform duration-300"
+                                style={{ objectFit: 'cover' }} // Добавлено свойство objectFit
                             />
                         </div>
                     ))}
@@ -58,16 +58,18 @@ const PhotoCard = ({ photos, fishName }) => {
                     <img
                         src={photos[0].url}
                         alt={fishName}
-                        className="w-full h-48 object-cover rounded-md mb-4 transition-transform duration-300"
+                        className="w-full h-48 sm:h-56 md:h-64 lg:h-72 object-cover rounded-md mb-4 transition-transform duration-300"
+                        style={{ objectFit: 'cover' }} // Добавлено свойство objectFit
                     />
                 </div>
             )
         ) : (
             <div>
                 <img
-                    src='404.png'
+                    src='../404.png'
                     alt={fishName}
-                    className="w-full h-48 object-cover rounded-md mb-4 transition-transform duration-300"
+                    className="w-full h-48 sm:h-56 md:h-64 lg:h-72 object-cover rounded-md mb-4 transition-transform duration-300"
+                    style={{ objectFit: 'cover' }} // Добавлено свойство objectFit
                 />
             </div>
         )
