@@ -2,14 +2,14 @@
 
 import OrderCard from "@/app/components/OrderCard";
 import { useAuth } from "@/app/context/AuthContext";
-const { getOrderFish } = require("@/app/api/handlers");
+const { getOrderFish, getOrders } = require("@/app/api/handlers");
 const { useEffect, useState } = require("react");
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
-const Catalog = () => {
+const Orders = () => {
     const { user } = useAuth();
-    const search = useSearchParams();
-    const [orders, setOrders] = useState([]);
+    const [myOrders, setMyOrders] = useState([]);
+    const router = useRouter();
 
     useEffect(() => {
         if (!user) {
@@ -19,9 +19,14 @@ const Catalog = () => {
 
     useEffect(() => {
         const fetchOrders = async () => {
-            const id = search.get('fishId');
-            const response = await getOrderFish(id);
-            setOrders(response);
+            const orders = await getOrders();
+
+            let userOrder = [];
+            orders.map((order) => {
+                order.fish.user.id === user.id ? userOrder.push(order) : null;
+            });
+
+            setMyOrders(userOrder);
         };
 
         fetchOrders();
@@ -34,8 +39,8 @@ const Catalog = () => {
                     <div className="mt-6">
                         <h1 className="text-2xl font-semibold mb-2">Мои заказы</h1>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {orders.length > 0 ? (
-                                orders.slice().reverse().map((order) => (
+                            {myOrders.length > 0 ? (
+                                myOrders.slice().reverse().map((order) => (
                                     <OrderCard key={order.id} order={order} />
                                 ))
                             ) : (
@@ -49,4 +54,4 @@ const Catalog = () => {
     );
 };
 
-export default Catalog;
+export default Orders;
