@@ -12,9 +12,15 @@ use App\Models\Requests;
 
 class UserValuesController extends Controller
 {
-    public function index($id)
+    public function fishes($id)
     {
         return FishResources::collection(Fish::where('user_id', '=', $id)->get());
+    }
+
+    public function fishesDestroy($id)
+    {
+        Fish::where('user_id', '=', $id)->delete();
+        return response(null, 204);
     }
 
     public function requests($id) 
@@ -26,4 +32,11 @@ class UserValuesController extends Controller
     {
         return OrderResources::collection(Order::where('user_id', '=', $id)->get());   
     }
+
+    public function ordersDestroy($id)
+    {
+        Order::where('user_id', '=', $id)->delete();
+        return response(null, 204);
+    }
+
 }

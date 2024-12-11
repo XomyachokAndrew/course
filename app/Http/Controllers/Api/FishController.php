@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FishStoreRequest;
 use App\Http\Resources\FishResources;
 use App\Http\Resources\OrderResources;
+use App\Http\Resources\PhotoResources;
 use App\Models\Fish;
 use App\Models\Order;
 use App\Models\Photo;
@@ -76,5 +77,10 @@ class FishController extends Controller
     public function orders($id) 
     {
         return OrderResources::collection(Order::where('fish_id', '=', $id)->get());   
+    }
+
+    public function photos($id) 
+    {
+        return PhotoResources::collection(Photo::where('fish_id', '=', $id)->get());   
     }
 }

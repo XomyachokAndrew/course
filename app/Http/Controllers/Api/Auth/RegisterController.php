@@ -8,9 +8,7 @@ use App\Http\Resources\UserResources;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Storage;
 
 class RegisterController extends Controller
 {
@@ -19,27 +17,35 @@ class RegisterController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $request->validate([
+        \Log::info('error', ['12' => $request->all()]);
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'place' => 'required|string|max:255',
-            'phone' => 'required|string|max:11|unique:users', // Убедитесь, что это поле уникально
-            'password' => 'required|string|min:8',
-            'password_confirmation' => 'required|string|min:8',
-
+            'phone' => 'required|string|min:11|max:12|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+    
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
-        if ($request['password'] != $request['password_confirmation']) {
-            return response()->json($request->errors(), 422);
+        // Сохранение изображения, если оно было загружено
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('photos', 'public'); // Сохранение в папку 'photos' в публичном хранилище
+            $photoPath = 'http://localhost:8000'.Storage::url($photoPath);
         }
 
         $user = User::create([
             'role_id' => 1,
             'name' => $request->name,
+            'photo' => $photoPath, // Сохранение пути к изображению в базе данных
             'place' => $request->place,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
         ]);
-     
+
         return response()->json([
             'user' => new UserResources($user),
             'message' => 'Пользователь успешно зарегистрирован.',

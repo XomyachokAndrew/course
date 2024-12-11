@@ -25,7 +25,7 @@ class PhotoController extends Controller
     {
         $request->validate([
             'fish_id' => 'required|integer',
-            'images' => 'required|array',
+            'images' => 'array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -70,6 +70,7 @@ class PhotoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Photo::find($id)->delete();
+        return response(null, 204);
     }
 }
