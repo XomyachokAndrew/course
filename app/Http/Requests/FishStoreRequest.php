@@ -23,6 +23,7 @@ class FishStoreRequest extends FormRequest
     {
         return [
             "fish_name_id" => 'required|integer',
+            "type_id" => 'required|integer',
             "user_id" => 'required|integer',
             "weight" => 'required|numeric',
             "cost_per_kg" => 'required|numeric',

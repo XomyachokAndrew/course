@@ -24,9 +24,9 @@ class UserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'place' => 'required|string|max:255',
-            'phone' => 'required|string|max:11|unique:users', // Убедитесь, что это поле уникально
-            'password' => 'required|string|min:8',
-            'password_confirmation' => 'required|string|min:8',
+            'phone' => 'required|string|max:12|unique:users',
+            'password' => 'required|string|min:8|confirmed', // Используем правило confirmed
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }

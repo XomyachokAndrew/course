@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\TypeController;
 use App\Http\Controllers\Api\UserValuesController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PhotoController;
@@ -27,24 +28,33 @@ use App\Http\Controllers\Api\FishNameController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::middleware('auth:api')->get('users', [UserController::class, 'index']);
-Route::middleware('auth:api')->get('users/{id}', [UserController::class, 'show']);
+
 Route::post('login', [LoginController::class, 'store']);
+Route::post('token/refresh', [LoginController::class, 'refresh']);
+
 Route::get('/csrf-token', function () {
     return response()->json(['csrfToken' => csrf_token()]);
 });
-Route::middleware('auth:api')->group(function () {
+
+
+Route::group(['middleware' => ['jwt.auth']], function () {
+    Route::get('users', [UserController::class, 'index']);
+    Route::delete('users/{id}', [UserController::class, 'destroy']);
+    Route::get('users/{id}', [UserController::class, 'show']);
+
     Route::delete('logout', [LoginController::class, 'destroy']);
-    // Другие защищенные маршруты
+
+    Route::apiResources([
+        'orders' => OrderController::class,
+    ]);
+
+    Route::get('user/orders/{id}', [UserValuesController::class, 'orders']);
+    Route::get('fish/orders/{id}', [FishController::class, 'orders']);
 });
 
-// Route::middleware(['auth:api', 'role:admin'])->group(function () {
-//     Route::get('user', [UserController::class, 'destroy']);
-// });
-
 Route::apiResources([
+    'types' => TypeController::class,
     'requests' => RequestController::class,
-    'orders' => OrderController::class,
     'photos' => PhotoController::class,
     'fish_names' => FishNameController::class,
     'register' => RegisterController::class,
@@ -55,8 +65,8 @@ Route::apiResources([
 Route::get('requests/{id}', [RequestController::class, 'show']);
 Route::get('photos/{id}', [PhotoController::class, 'show']);
 Route::get('fishes/{id}', [FishController::class, 'show']);
+Route::get('fish/photos/{id}', [FishController::class, 'photos']);
 
-Route::get('user/fishes/{id}', [UserValuesController::class, 'index']);
+Route::get('user/fishes/{id}', [UserValuesController::class, 'fishes']);
 Route::get('user/requests/{id}', [UserValuesController::class, 'requests']);
-Route::get('user/orders/{id}', [UserValuesController::class, 'orders']);
-Route::get('fish/orders/{id}', [FishController::class, 'orders']);
+

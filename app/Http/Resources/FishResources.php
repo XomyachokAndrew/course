@@ -20,6 +20,7 @@ class FishResources extends JsonResource
             'id' => $this->id,
             'user' => new UserResources($this->user),
             'fish_name' => new FishNameResources($this->fishName),
+            'type' => $this->type->name,
             'photos' => PhotoResources::collection($this->photos),
             'weight' => $this->weight,
             'cost_per_kg' => $this->cost_per_kg,
