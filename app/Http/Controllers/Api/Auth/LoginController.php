@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
 
 class LoginController extends Controller
 {
@@ -14,15 +13,25 @@ class LoginController extends Controller
      */
     public function store(Request $request)
     {
-        $credentials = $request->only('phone', 'password');
-        \Log::info('Данные найден: ', $credentials);
+        try {
+            $request->validate([
+                'phone' => 'required|string',
+                'password' => 'required|string',
+            ]);
 
-        if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'invalid_credentials'], 401);
+            $credentials = $request->only('phone', 'password');
+            \Log::info('Попытка аутентификации для телефона: ', ['phone' => $credentials['phone']]);
+
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json(['error' => 'invalid_credentials'], 401);
+            }
+
+            $user = JWTAuth::user();
+            return response()->json(compact('token', 'user'));
+        } catch (\Exception $e) {
+            \Log::error('Ошибка при аутентификации: ' . $e->getMessage());
+            return response()->json(['error' => 'internal_server_error'], 500);
         }
-
-        $user = JWTAuth::user();
-        return response()->json(compact('token', 'user'));
     }
 
     public function destroy()
@@ -34,13 +43,13 @@ class LoginController extends Controller
     public function refresh(Request $request)
     {
         try {
-            // Получаем текущий токен
-            $token = JWTAuth::getToken();
-            // Обновляем токен
+            $token = $request->bearerToken();
+
             $newToken = JWTAuth::refresh($token);
             return response()->json(['token' => $newToken]);
-        } catch (JWTException $e) {
-            return response()->json(['error' => 'Could not refresh token'], 500);
+        } catch (\Exception $e) {
+            \Log::error('Ошибка при обновлении токена: ' . $e->getMessage());
+            return response()->json(['error' => 'internal_server_error'], 500);
         }
     }
 }
