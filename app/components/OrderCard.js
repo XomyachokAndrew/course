@@ -1,8 +1,32 @@
+import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 import PhotoCard from './PhotoCard';
+import { getOrder } from '../api/handlers';
 
 const OrderCard = ({ order }) => {
     const { user } = useAuth();
+    const isThisUser = user ? (user.id === order.user.id) : null;
+    const router = useRouter(); // Инициализируем useRouter
+
+    const handleDelete = async (id) => {
+        if (confirm('Вы уверены, что хотите удалить эту рыбу?')) {
+            try {
+                const order = await getOrder(id);
+
+                if (order) {
+                    order.map(async (order) => {
+                        await deleteOrder(order.id);
+                    });
+                }
+
+                router.push('/profile'); // Перенаправление после удаления
+            } catch (error) {
+                console.error('Ошибка при удалении рыбы:', error);
+                alert('Произошла ошибка при удалении рыбы. Попробуйте еще раз.');
+            }
+        }
+    };
+
     return (
         <div key={order.id} className="border rounded-lg p-4 shadow-md transition-transform transform hover:scale-105 bg-white hover:bg-gray-100 mb-4">
             <div className="mt-6">
@@ -20,10 +44,24 @@ const OrderCard = ({ order }) => {
                             </>
                         ) : (
                             <>
-                            <p><strong>Заказчик:</strong> {order.user.name}</p>
-                            <p><strong>Номер телефона:</strong> {order.user.number}</p>
+                                <p><strong>Заказчик:</strong> {order.user.name}</p>
+                                <p><strong>Номер телефона:</strong> {order.user.number}</p>
                             </>
                         )}
+                        <div className="flex flex-col items-start">
+                            {
+                                user ? (
+                                    isThisUser ? (
+                                        <button
+                                            onClick={() => handleDelete(order.id)}
+                                            className="inline-block w-full text-red-500 py-3 hover:text-red-700"
+                                        >
+                                            Удалить
+                                        </button>
+                                    ) : null
+                                ) : null
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
