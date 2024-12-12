@@ -1,13 +1,12 @@
 import axios from "axios";
-import { useRouter } from "next/navigation";
-import { useAuth } from "../context/AuthContext";
+import jwt from "jsonwebtoken";
 
 axios.defaults.baseURL = 'http://localhost:8000/api';
 
 const csrf_token = async () => {
     const response = await axios.get(`/csrf-token`, { withCredentials: true });
     return response.data.csrfToken;
-}
+};
 
 // Функция для обработки ошибок
 const handleError = (error) => {
@@ -25,44 +24,36 @@ const handleError = (error) => {
     }
 };
 
-export const fetchWithAuth = async (url, options = {}) => {
-    const token = localStorage.getItem('token');
-
-    if (token) {
-        options.headers = {
-            ...options.headers,
-            Authorization: `Bearer ${token}`,
-        };
+const refreshToken = async (token) => {
+    if (!token) {
+        throw new Error('Token is required for refreshing.');
     }
 
-    try {
-        const response = await axios(url, options);
+    // Декодируем токен, чтобы проверить его срок действия
+    const decodedToken = jwt.decode(token);
+    const currentTime = Math.floor(Date.now() / 1000); // Текущее время в секундах
 
-        // Если токен истек, попробуйте обновить его
-        if (response.status === 401) {
-            const refreshResponse = await axios.post('token/refresh', {}, {
+    // Проверяем, истек ли срок действия токена
+    if (decodedToken.exp < currentTime) {
+
+        const csrfToken = await csrf_token();
+
+        try {
+            const response = await axios.post('token/refresh', {}, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    'X-CSRF-TOKEN': csrfToken,
+                    Authorization: `Bearer ${token}`, // Добавляем токен в заголовки
                 },
+                withCredentials: true,
             });
 
-            if (refreshResponse.status === 200) {
-                const { token: newToken } = refreshResponse.data;
-                localStorage.setItem('token', newToken);
-
-                // Повторите оригинальный запрос с новым токеном
-                options.headers.Authorization = `Bearer ${newToken}`;
-                return axios(url, options);
-            } else {
-                const router = useRouter();
-                router.push('/login');
-            }
+            return response.data.token;
+        } catch (error) {
+            console.error('Error refreshing token:', error);
+            throw new Error('Failed to refresh token.');
         }
-
-        return response;
-    } catch (error) {
-        handleError(error);
     }
+    return token;
 };
 
 //#region GET
@@ -97,7 +88,14 @@ export const getFish = async (id) => {
 
 export const getFishUser = async (id) => {
     try {
-        const response = await axios.get(`/user/fishes/${id}`);
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
+        const response = await axios.get(`/user/fishes/${id}`, {
+            headers: {
+                Authorization: `Bearer ${actualToken}`,
+            },
+            withCredentials: true,
+        });
         return response.data.data;
     } catch (error) {
         handleError(error);
@@ -135,10 +133,30 @@ export const getRequestUser = async (id) => {
 //#endregion
 
 //#region Order
+export const getOrder = async (id) => {
+    try {
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
+        const response = await axios.get(`/orders/${id}`, {
+            headers: {
+                Authorization: `Bearer ${actualToken}`,
+            },
+            withCredentials: true,
+        });
+        return response.data.data;
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 export const getOrders = async () => {
     try {
-        const response = await fetchWithAuth(`/orders`, {
-            method: 'GET',
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
+        const response = await axios.get(`/orders`, {
+            headers: {
+                Authorization: `Bearer ${actualToken}`,
+            },
             withCredentials: true,
         });
         return response.data.data;
@@ -149,8 +167,12 @@ export const getOrders = async () => {
 
 export const getOrderUser = async (id) => {
     try {
-        const response = await fetchWithAuth(`/user/orders/${id}`, {
-            method: 'GET',
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
+        const response = await axios.get(`/user/orders/${id}`, {
+            headers: {
+                Authorization: `Bearer ${actualToken}`,
+            },
             withCredentials: true,
         });
         return response.data.data;
@@ -161,8 +183,12 @@ export const getOrderUser = async (id) => {
 
 export const getOrderFish = async (id) => {
     try {
-        const response = await fetchWithAuth(`/fish/orders/${id}`, {
-            method: 'GET',
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
+        const response = await axios.get(`/fish/orders/${id}`, {
+            headers: {
+                Authorization: `Bearer ${actualToken}`,
+            },
             withCredentials: true,
         });
         return response.data.data;
@@ -174,8 +200,12 @@ export const getOrderFish = async (id) => {
 
 export const getUsers = async () => {
     try {
-        const response = await fetchWithAuth(`/users`, {
-            method: 'GET',
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
+        const response = await axios.get(`/users`, {
+            headers: {
+                Authorization: `Bearer ${actualToken}`,
+            },
             withCredentials: true,
         });
         return response.data.data;
@@ -228,7 +258,8 @@ export const postFishWithPhotos = async (fishData, images) => {
 
     try {
         const csrfToken = await csrf_token(); // Получаем CSRF-токен
-
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
         // Используем axios.post для отправки данных
         const response = await axios.post('/fishes', formData, {
             headers: {
@@ -263,9 +294,11 @@ export const postRequest = async (request) => {
 export const postOrder = async (order) => {
     try {
         const csrfToken = await csrf_token();
-
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
         const response = await axios.post('/orders', order, {
             headers: {
+                Authorization: `Bearer ${actualToken}`,
                 'X-CSRF-TOKEN': csrfToken,
             },
             withCredentials: true,
@@ -279,14 +312,16 @@ export const postOrder = async (order) => {
 //#endregion
 
 //#region DELETE
-
 export const deleteUser = async (id) => {
     try {
         const csrfToken = await csrf_token();
 
-        const response = await fetchWithAuth(`/users/${id}`, {
-            method: 'DELETE',
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
+
+        const response = await axios.delete(`/users/${id}`, {
             headers: {
+                Authorization: `Bearer ${actualToken}`,
                 'X-CSRF-TOKEN': csrfToken,
             },
             withCredentials: true,
@@ -301,8 +336,13 @@ export const deleteUser = async (id) => {
 export const deleteFish = async (id) => {
     try {
         const csrfToken = await csrf_token();
+
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
+
         const response = await axios.delete(`/fishes/${id}`, {
             headers: {
+                Authorization: `Bearer ${actualToken}`,
                 'X-CSRF-TOKEN': csrfToken,
             },
             withCredentials: true,
@@ -317,9 +357,13 @@ export const deleteFish = async (id) => {
 export const deleteOrder = async (id) => {
     try {
         const csrfToken = await csrf_token();
-        const response = await fetchWithAuth(`/orders/${id}`, {
-            method: 'DELETE',
+
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
+
+        const response = await axios.delete(`/orders/${id}`, {
             headers: {
+                Authorization: `Bearer ${actualToken}`,
                 'X-CSRF-TOKEN': csrfToken,
             },
             withCredentials: true,
@@ -334,9 +378,13 @@ export const deleteOrder = async (id) => {
 export const deletePhoto = async (id) => {
     try {
         const csrfToken = await csrf_token();
-        const response = await fetchWithAuth(`/photos/${id}`, {
-            method: 'DELETE',
+
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
+
+        const response = await axios.delete(`/photos/${id}`, {
             headers: {
+                Authorization: `Bearer ${actualToken}`,
                 'X-CSRF-TOKEN': csrfToken,
             },
             withCredentials: true,
@@ -351,9 +399,13 @@ export const deletePhoto = async (id) => {
 export const deleteRequest = async (id) => {
     try {
         const csrfToken = await csrf_token();
-        const response = await fetchWithAuth(`/requests/${id}`, {
-            method: 'DELETE',
+
+        const token = localStorage.getItem('token');
+        const actualToken = await refreshToken(token);
+
+        const response = await axios.delete(`/requests/${id}`, {
             headers: {
+                Authorization: `Bearer ${actualToken}`,
                 'X-CSRF-TOKEN': csrfToken,
             },
             withCredentials: true,
