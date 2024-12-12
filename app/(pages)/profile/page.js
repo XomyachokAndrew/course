@@ -11,9 +11,9 @@ const Profile = () => {
     const [fishData, setFishData] = useState([]); // Состояние для данных о рыбе
     const [requestData, setRequestData] = useState([]); // Состояние для данных о запросах
     const [activeSection, setActiveSection] = useState(true); // Состояние для активной секции
-    const router = useRouter();
     const [selectedType, setSelectedType] = useState('Все'); // Состояние для выбранного типа рыбы
     const [orderCount, setOrderCount] = useState(0);
+    const router = useRouter();
 
     useEffect(() => {
         if (!user) {
@@ -237,7 +237,7 @@ const FishSection = ({ fishes }) => {
     return (
         <div className="max-w-2xl mx-auto mb-8">
             <h2 className="text-xl font-bold mb-4 text-center">Мой улов</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-fr">
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 auto-rows-fr">
                 {fishes.length > 0 ? (
                     fishes.slice().reverse().map((fish) => (
                         <FishCard key={fish.id} fish={fish} />
@@ -249,7 +249,6 @@ const FishSection = ({ fishes }) => {
         </div>
     );
 };
-
 
 const RequestSection = ({ requests }) => {
     return (

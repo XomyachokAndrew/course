@@ -74,6 +74,10 @@ const AddFish = () => {
             setError('Ошибка при добавлении рыбы. Попробуйте еще раз.');
         }
     };
+    
+    const handleBack = async () => {
+        router.back();
+    };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -142,12 +146,21 @@ const AddFish = () => {
                             className="w-full border border-gray-300 p-2 rounded"
                         />
                     </div>
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
-                    >
-                        Добавить
-                    </button>
+                    <div className="flex justify-between mb-4">
+                        <button
+                            type="button"
+                            onClick={handleBack}
+                            className="bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition duration-200"
+                        >
+                            Назад
+                        </button>
+                        <button
+                            type="submit"
+                            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+                        >
+                            Добавить
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

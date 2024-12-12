@@ -60,6 +60,10 @@ const OrderPage = () => {
         }
     };
 
+    const handleBack = async () => {
+        router.back();
+    };
+
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div className="max-w-2xl border rounded-lg p-6 shadow-md mb-4 bg-white min-w-96">
@@ -85,12 +89,21 @@ const OrderPage = () => {
                                 max={fish.weight} // Устанавливаем максимальное значение
                             />
                         </div>
-                        <button
-                            type="submit"
-                            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
-                        >
-                            Оформить заказ
-                        </button>
+                        <div className="flex justify-between mb-4">
+                            <button
+                                type="button"
+                                onClick={handleBack}
+                                className="bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition duration-200"
+                            >
+                                Назад
+                            </button>
+                            <button
+                                type="submit"
+                                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+                            >
+                                Оформить заказ
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

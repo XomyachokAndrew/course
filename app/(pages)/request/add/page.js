@@ -53,9 +53,14 @@ const AddFish = () => {
         }
     };
 
+    const handleBack = async () => {
+        router.back();
+    };
+
     return (
         <div className="flex items-center justify-center min-h-screen  mt-16"> {/* Добавлен отступ сверху */}
             <div className="bg-white p-8 rounded-lg shadow-md w-96">
+
                 <h1 className="text-3xl font-bold mb-4">Добавить Запрос на рыбу</h1>
                 {error && <p className="text-red-500 mb-4">{error}</p>}
                 {success && <p className="text-green-500 mb-4">{success}</p>}
@@ -80,12 +85,21 @@ const AddFish = () => {
                             className="w-full border border-gray-300 p-2 rounded"
                         />
                     </div>
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
-                    >
-                        Добавить
-                    </button>
+                    <div className="flex justify-between mb-4">
+                        <button
+                            type="button"
+                            onClick={handleBack}
+                            className="bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition duration-200"
+                        >
+                            Назад
+                        </button>
+                        <button
+                            type="submit"
+                            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+                        >
+                            Добавить
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

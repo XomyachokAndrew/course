@@ -34,9 +34,22 @@ const Fish = ({ params }) => {
         fetchFish();
     }, [user]); // Добавлен user в зависимости
 
+    const handleBack = async () => {
+        router.back();
+    };
+
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+                <div className="flex justify-between mb-4">
+                    <button
+                        type="button"
+                        onClick={handleBack}
+                        className="bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition duration-200"
+                    >
+                        Назад
+                    </button>
+                </div>
                 <h1 className="text-3xl font-bold mb-4"><strong>Рыба:</strong> {fish.fish_name.name}</h1>
                 <PhotoCard key={fish.id} photos={fish.photos} fishName={fish.fish_name.name} />
                 <p className="text-lg text-gray-700"><strong>Вес:</strong> {fish.weight} кг</p>
