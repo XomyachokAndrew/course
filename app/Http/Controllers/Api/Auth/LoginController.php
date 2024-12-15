@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResources;
+use Auth;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller
 {
@@ -20,36 +21,24 @@ class LoginController extends Controller
             ]);
 
             $credentials = $request->only('phone', 'password');
-            \Log::info('Попытка аутентификации для телефона: ', ['phone' => $credentials['phone']]);
+            \Log::info('Attempting authentication for phone: ', ['phone' => substr($credentials['phone'], -4)]); // Log only the last 4 digits
 
-            if (!$token = JWTAuth::attempt($credentials)) {
+            if (!$token = Auth::attempt($credentials)) {
                 return response()->json(['error' => 'invalid_credentials'], 401);
             }
 
-            $user = JWTAuth::user();
-            return response()->json(compact('token', 'user'));
+            $user = new UserResources(Auth::user()); // Corrected to use single user instance
+            return response()->json(['token' => $token, 'user' => $user]);
         } catch (\Exception $e) {
-            \Log::error('Ошибка при аутентификации: ' . $e->getMessage());
+            \Log::error('Authentication error: ' . $e->getMessage());
             return response()->json(['error' => 'internal_server_error'], 500);
         }
     }
 
     public function destroy()
     {
-        JWTAuth::invalidate(JWTAuth::getToken());
+        Auth::invalidate(Auth::user());
         return response()->json(['message' => 'User logged out successfully']);
     }
 
-    public function refresh(Request $request)
-    {
-        try {
-            $token = $request->bearerToken();
-
-            $newToken = JWTAuth::refresh($token);
-            return response()->json(['token' => $newToken]);
-        } catch (\Exception $e) {
-            \Log::error('Ошибка при обновлении токена: ' . $e->getMessage());
-            return response()->json(['error' => 'internal_server_error'], 500);
-        }
-    }
 }

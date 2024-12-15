@@ -6,11 +6,9 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PhotoController;
 use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
-// use App\Http\Controllers\Api\Auth\PersonalAccessTokenController;
 use App\Http\Controllers\Api\FishController;
 use App\Http\Controllers\Api\FishNameController;
 
@@ -37,20 +35,18 @@ Route::get('/csrf-token', function () {
 });
 
 
-Route::group(['middleware' => ['jwt.auth']], function () {
-    Route::get('users', [UserController::class, 'index']);
-    Route::delete('users/{id}', [UserController::class, 'destroy']);
-    Route::get('users/{id}', [UserController::class, 'show']);
+Route::get('users', [UserController::class, 'index']);
+Route::delete('users/{id}', [UserController::class, 'destroy']);
+Route::get('users/{id}', [UserController::class, 'show']);
 
-    Route::delete('logout', [LoginController::class, 'destroy']);
+Route::delete('logout', [LoginController::class, 'destroy']);
 
-    Route::apiResources([
-        'orders' => OrderController::class,
-    ]);
+Route::apiResources([
+    'orders' => OrderController::class,
+]);
 
-    Route::get('user/orders/{id}', [UserValuesController::class, 'orders']);
-    Route::get('fish/orders/{id}', [FishController::class, 'orders']);
-});
+Route::get('user/orders/{id}', [UserValuesController::class, 'orders']);
+Route::get('fish/orders/{id}', [FishController::class, 'orders']);
 
 Route::apiResources([
     'types' => TypeController::class,
