@@ -1,6 +1,7 @@
 'use client';
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { csrf_token } from '../api/handlers';
 
 const AuthContext = createContext();
 
@@ -14,11 +15,6 @@ export const AuthProvider = ({ children }) => {
     });
 
     axios.defaults.baseURL = 'http://localhost:8000/api';
-
-    const csrf_token = async () => {
-        const response = await axios.get(`/csrf-token`, { withCredentials: true });
-        return response.data.csrfToken;
-    }
 
     const handleError = (error) => {
         let message = 'Произошла ошибка';
@@ -43,7 +39,7 @@ export const AuthProvider = ({ children }) => {
 
         return message;
     };
-    
+
     const register = async (userData) => {
         try {
             const csrfToken = await csrf_token();
@@ -63,7 +59,7 @@ export const AuthProvider = ({ children }) => {
         try {
             // Получаем CSRF токен
             const csrfToken = await csrf_token();
-    
+
             // Выполняем запрос на вход в систему
             const response = await axios.post('/login', { phone, password }, {
                 headers: {
@@ -71,15 +67,15 @@ export const AuthProvider = ({ children }) => {
                 },
                 withCredentials: true // Отправляем куки с запросом
             });
-    
+
             // Извлекаем данные пользователя и токен из ответа
             const userData = response.data.user;
             const authToken = response.data.token;
-    
+
             // Сохраняем токен и данные пользователя в localStorage
             localStorage.setItem('token', authToken);
             localStorage.setItem('user', JSON.stringify(userData));
-    
+
             // Обновляем состояние приложения
             setToken(authToken);
             setUser(userData);
@@ -89,25 +85,24 @@ export const AuthProvider = ({ children }) => {
             throw new Error(error); // Пробрасываем ошибку дальше
         }
     };
-    
+
     const logout = async () => {
         try {
             // Получаем CSRF токен
             const csrfToken = await csrf_token();
-    
+            
             // Выполняем запрос на выход из системы
             await axios.delete('/logout', {
                 headers: {
                     'X-CSRF-TOKEN': csrfToken,
-                    Authorization: `Bearer ${token}`, // Используем токен для авторизации
                 },
                 withCredentials: true // Отправляем куки с запросом
             });
-    
+
             // Удаляем токен и данные пользователя из localStorage
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-    
+
             // Обновляем состояние приложения
             setToken(null);
             setUser(null);
@@ -121,7 +116,7 @@ export const AuthProvider = ({ children }) => {
             setUser(null);
         }
     };
-    
+
 
     axios.interceptors.request.use((config) => {
         if (token) {

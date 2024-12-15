@@ -2,12 +2,14 @@
 
 import OrderCard from "@/app/components/OrderCard";
 import { useAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
 const { getOrderUser } = require("@/app/api/handlers");
 const { useEffect, useState } = require("react");
 
 const Catalog = () => {
     const { user } = useAuth();
     const [orders, setOrders] = useState([]);
+    const router = useRouter();
 
     useEffect(() => {
         if (!user) {
