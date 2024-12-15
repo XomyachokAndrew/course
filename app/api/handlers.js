@@ -110,7 +110,7 @@ export const getOrder = async (id) => {
     }
 };
 
-export const getOrders = async (token) => {
+export const getOrders = async () => {
     try {
         const response = await axios.get(`/orders`, {
             'withCredentials': true,

@@ -19,19 +19,6 @@ const Profile = () => {
         if (!user) {
             router.push('/login'); // Перенаправление на страницу входа, если пользователь не аутентифицирован
         } else {
-            const fetchOrderCount = async () => {
-                let count = 0;
-                const orders = await getOrders();
-
-                orders.map((order) => {
-                    if (order.fish.user.id == user.id) {
-                        count++;
-                    }
-                });
-
-                setOrderCount(count)
-            };
-
             const fetchUserData = async () => {
                 try {
                     const fishResponse = await getFishUser(user.id);
@@ -43,10 +30,30 @@ const Profile = () => {
                 }
             };
 
-            fetchOrderCount();
             fetchUserData(); // Получение данных о рыбе и запросах
         }
     }, [user, router]);
+
+    useEffect(() => {
+        if (!user) {
+            router.push('/login'); // Перенаправление на страницу входа, если пользователь не аутентифицирован
+        }
+
+        const fetchOrderCount = async () => {
+            let count = 0;
+            const orders = await getOrders();
+
+            orders.map((order) => {
+                if (order.fish.user.id == user.id) {
+                    count++;
+                }
+            });
+
+            setOrderCount(count)
+        };
+
+        fetchOrderCount();
+    }, [user]);
 
     const filteredFishes = selectedType === 'Все' ? fishData : fishData.filter(fish => fish.type == selectedType);
 
