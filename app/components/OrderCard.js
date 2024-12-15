@@ -7,7 +7,7 @@ const OrderCard = ({ order }) => {
     const { user } = useAuth();
     const isThisUser = user ? (user.id === order.user.id) : null;
     const router = useRouter(); // Инициализируем useRouter
-
+    
     const handleDelete = async (id) => {
         if (confirm('Вы уверены, что хотите удалить эту рыбу?')) {
             try {
@@ -35,6 +35,7 @@ const OrderCard = ({ order }) => {
                     <PhotoCard key={order.id} photos={order.fish.photos} fishName={order.fish.fish_name.name} />
                     <div className="text-gray-600 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
                         <p><strong>Вес:</strong> {order.weight} кг</p>
+                        <p><strong>Тип:</strong> {order.fish.type}</p>
                         <p><strong>Сумма:</strong> {order.weight * order.fish.cost_per_kg} руб.</p>
                         <p><strong>Дата заказа:</strong> {order.date}</p>
                         {order.fish.user.id != user.id ? (
