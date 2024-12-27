@@ -27,10 +27,10 @@ const Catalog = () => {
     }, []);
 
     // Фильтрация рыб по типу
-    const filteredFishes = selectedType === 'Все' ? fishes : fishes.filter(fish => fish.type === selectedType);
+    const filteredFishes = fishes.filter(fish => fish.weight != 0 && (selectedType === 'Все' || fish.type === selectedType));
 
     return (
-        <div className="min-h-screen flex items-center justify-center mt-16">
+        <div className="min-h-screen flex items-center justify-center mt-24">
             <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
                 <div className="flex justify-between mb-4">
                     <button

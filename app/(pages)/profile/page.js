@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import FishCard from '@/app/components/FishCard';
 import RequestCard from '@/app/components/RequestCard';
-import { getFishUser, getOrders, getRequestUser } from '@/app/api/handlers';
+import { getFishUser, getOrders, getRequestUser, putUser } from '@/app/api/handlers';
 
 const Profile = () => {
     const { user, logout } = useAuth();
@@ -106,18 +106,13 @@ const Profile = () => {
 const ProfileSection = ({ user, logout, router, orderCount }) => {
     const [name, setName] = useState(user.name || '');
     const [place, setPlace] = useState(user.place || '');
-    const [phone, setPhone] = useState(user.phone || '');
+    const [phone, setPhone] = useState(user.number || '');
 
     const handleLogout = async () => {
         await logout();
         router.push('/login'); // Перенаправление на главную страницу после выхода
     };
 
-    const handleUpdateProfile = async (e) => {
-        e.preventDefault();
-        // Здесь вы можете добавить логику для обновления профиля пользователя
-        console.log('Обновление профиля:', { name, place, phone });
-    };
 
     const handleAddFish = () => {
         router.push('/fish/add/'); // Перенаправление на страницу добавления рыбы
@@ -158,44 +153,19 @@ const ProfileSection = ({ user, logout, router, orderCount }) => {
                     </div>
             }
 
-            <form onSubmit={handleUpdateProfile}>
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">ФИО:</label>
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#0066FF]"
-                        required
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">Место:</label>
-                    <input
-                        type="text"
-                        value={place}
-                        onChange={(e) => setPlace(e.target.value)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#0066FF]"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">Номер телефона:</label>
-                    <input
-                        type="text"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#0066FF]"
-                        required
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="w-full bg-[#0066FF] text-white font-semibold py-2 rounded-md hover:bg-[#0013FF] transition duration-200"
-                >
-                    Обновить профиль
-                </button>
-            </form>
-            <div className="mt-4 text-center">
+            <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">ФИО:</label>
+                <div className="mt-1 block w-full p-2 rounded-md">{name}</div>
+            </div>
+            <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Место:</label>
+                <div className="mt-1 block w-full p-2 rounded-md">{place}</div>
+            </div>
+            <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Номер телефона:</label>
+                <div className="mt-1 block w-full p-2 rounded-md">{phone}</div>
+            </div>
+            <div className="mt-8 text-center">
                 <button onClick={handleLogout} className="text-[#0066FF] hover:text-[#0013FF] transition duration-200">
                     Выйти
                 </button>

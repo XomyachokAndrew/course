@@ -1,28 +1,22 @@
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 import PhotoCard from './PhotoCard';
-import { getOrder } from '../api/handlers';
+import { deleteOrder } from '../api/handlers';
 
 const OrderCard = ({ order }) => {
     const { user } = useAuth();
     const isThisUser = user ? (user.id === order.user.id) : null;
     const router = useRouter(); // Инициализируем useRouter
-    
-    const handleDelete = async (id) => {
-        if (confirm('Вы уверены, что хотите удалить эту рыбу?')) {
-            try {
-                const order = await getOrder(id);
 
-                if (order) {
-                    order.map(async (order) => {
-                        await deleteOrder(order.id);
-                    });
-                }
+    const handleDelete = async (id) => {
+        if (confirm('Вы уверены, что хотите удалить эту заказ?')) {
+            try {
+                await deleteOrder(order.id);
 
                 router.push('/profile'); // Перенаправление после удаления
             } catch (error) {
-                console.error('Ошибка при удалении рыбы:', error);
-                alert('Произошла ошибка при удалении рыбы. Попробуйте еще раз.');
+                console.error('Ошибка при удалении заказа:', error);
+                alert('Произошла ошибка при удалении заказа. Попробуйте еще раз.');
             }
         }
     };

@@ -39,14 +39,20 @@ export const getFishNames = async () => {
     }
 };
 
+// Функция для получения списка рыб с сервера
 export const getFishes = async () => {
     try {
+        // Выполняем GET-запрос к эндпоинту '/fishes' с помощью axios
         const response = await axios.get('/fishes');
+        
+        // Возвращаем данные о рыбах из ответа сервера
         return response.data.data;
     } catch (error) {
+        // Обрабатываем ошибку, если запрос не удался
         handleError(error);
     }
 };
+
 
 export const getFish = async (id) => {
     try {
@@ -245,6 +251,22 @@ export const postOrder = async (order) => {
         handleError(error);
     }
 };
+
+export const postFishName = async (fishName) => {
+    try {
+        const csrfToken = await csrf_token();
+        const response = await axios.post('/fish_names', fishName, {
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+            },
+            withCredentials: true,
+        });
+
+        return response.data; // Возвращаем данные о созданном заказе
+    } catch (error) {
+        handleError(error);
+    }
+};
 //#endregion
 
 //#region DELETE
@@ -270,6 +292,23 @@ export const deleteFish = async (id) => {
         const csrfToken = await csrf_token();
 
         const response = await axios.delete(`/fishes/${id}`, {
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+            },
+            withCredentials: true,
+        });
+
+        return response.data; // Возвращаем данные о результате удаления рыбы
+    } catch (error) {
+        handleError(error);
+    }
+};
+
+export const deleteFishNames = async (id) => {
+    try {
+        const csrfToken = await csrf_token();
+
+        const response = await axios.delete(`/fish_names/${id}`, {
             headers: {
                 'X-CSRF-TOKEN': csrfToken,
             },
@@ -328,6 +367,26 @@ export const deleteRequest = async (id) => {
         });
 
         return response.data; // Возвращаем данные о результате удаления запроса
+    } catch (error) {
+        handleError(error);
+    }
+};
+//#endregion
+
+//#region UPDATE
+export const putUser = async (user, id) => {
+    try {
+        const csrfToken = await csrf_token();
+        const response = await axios.put(`users/${id}`, user, {
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+            },
+            withCredentials: true,
+        });
+
+        localStorage.setItem('user', response.data);
+        
+        return response.data;
     } catch (error) {
         handleError(error);
     }
